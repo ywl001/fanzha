@@ -1,0 +1,6 @@
+<div #root id="root" [cdkDragFreeDragPosition]="position" cdkDragLockAxis="x" cdkDrag (cdkDragMoved) = onMoving($event)>
+    <p>{{tradeTime}}--{{count}}--{{totalMoney}}元</p>
+    <p>{{accountName}}</p>
+    <p>{{accountNumber}}</p>
+    <div class="btnDel" (click)="onDelete();$event.stopPropagation();"></div>
+</div>

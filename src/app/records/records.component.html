@@ -1,0 +1,24 @@
+<mat-accordion displayMode="flat">
+  <mat-expansion-panel *ngFor="let lawCase of caseList" (opened)=onOpenPanel(lawCase)>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{lawCase.caseName}}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="btnContainer">
+      <button mat-button (click)=onAddAccount(lawCase)>添加账号</button>
+      <button mat-button (click)=onAddFile()>上传数据</button>
+      <input #inputFile multiple type="file" style="display:none" (change)=onFileChange($event)>
+      <button mat-button (click)=onEditCase(lawCase)>修改案件</button>
+    </div>
+
+    <div class="item" *ngFor="let item of itemList" (click)="onItemClick(item);$event.stopPropagation();">
+      <span class='account'> {{item.account}} </span>
+      <div class="btnDel" (click)="onDelete(item);$event.stopPropagation();"></div>
+    </div>
+
+
+  </mat-expansion-panel>
+
+
+</mat-accordion>

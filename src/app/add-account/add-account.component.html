@@ -1,0 +1,26 @@
+<div class="root">
+  <mat-form-field>
+    <mat-label>起始账号：</mat-label>
+    <input [(ngModel)]="account" matInput>
+  </mat-form-field>
+
+  <div class="userName">
+    <mat-form-field>
+      <mat-label>账号姓名：</mat-label>
+      <input [(ngModel)]="accountName" matInput>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field>
+    <input matInput [ngxMatDatetimePicker]="picker" placeholder="转账时间" [(ngModel)]="tradeTime">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <ngx-mat-datetime-picker #picker [showSeconds]="true">
+    </ngx-mat-datetime-picker>
+  </mat-form-field>
+
+
+  <div class='btnContainer'>
+    <button mat-raised-button color='primary' mat-dialog-close (click)=onSubmit()>确定</button>
+    <button mat-raised-button color='accent' mat-dialog-close>取消</button>
+  </div>
+</div>

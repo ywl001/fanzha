@@ -1,0 +1,14 @@
+{
+  "查询账号": "account",
+  "对方账号姓名": "otherName",
+  "对方账号卡号": "otherAccount",
+  "金额": "money",
+  "余额": "leftMoney",
+  "借贷标志": "inOrOut",
+  "交易类型": "tradeType",
+  "交易结果": "tradeResult",
+  "交易时间": "tradeTime",
+  "交易流水号": "tradeNumber",
+  "交易摘要": "tradeDesc",
+  "商户名称": "tradeName"
+}

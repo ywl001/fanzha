@@ -1,0 +1,24 @@
+#root {
+  width: fit-content;
+  position: absolute;
+  background-color:lightseagreen;
+  cursor: pointer;
+}
+
+
+.btnDel {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background-image: url('../../assets/delete.png');
+  background-size: 100% auto; 
+  cursor: pointer;
+  top:8px;
+  right: 5px;
+  opacity: 0.1;
+}
+
+.btnDel:hover{
+  background-image: url('../../assets/delete_over.png');
+  opacity: 1;
+}

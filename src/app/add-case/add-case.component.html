@@ -1,0 +1,24 @@
+<div class="root">
+  <h1 mat-dialog-title>添加案件</h1>
+  <mat-form-field>
+    <mat-label>案件编号：</mat-label>
+    <input [(ngModel)]="caseNumber" matInput>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>案件名称：</mat-label>
+    <input matInput [(ngModel)]='caseName'>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>案件内容：</mat-label>
+    <textarea matInput [(ngModel)]='caseContent' cdkTextareaAutosize></textarea>
+  </mat-form-field>
+
+
+  <div class = 'btnContainer'>
+    <button mat-raised-button color='primary' [mat-dialog-close]= isClose (click)=onSubmit()>确定</button>
+    <button mat-raised-button color='accent' mat-dialog-close>取消</button>
+  </div>
+
+</div>

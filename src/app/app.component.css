@@ -1,0 +1,66 @@
+.root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  display: -webkit-flex;
+  flex-flow: row nowrap;
+  overflow: hidden;
+}
+
+.leftContainer {
+  width: 400px;
+  height: 100%;
+  /* background-color: aqua; */
+  position: relative;
+  border-right: 1px solid black;
+}
+
+.rightContainer {
+  flex: 1;
+  height: 100%;
+  background-color: lightyellow;
+  /* padding后overflow不出现水平滚动条 */
+  /* padding-left: 20px; */
+  /* padding-top: 20px; */
+  overflow:auto;
+  position: relative;
+}
+
+#chart{
+  width: auto;
+  height: auto;
+  position: relative;
+}
+
+#contentDiv {
+  position: absolute;
+}
+
+#bgCanvas {
+  position: absolute;
+}
+
+#btnAddCase {
+  width: 100%;
+}
+
+#btnClear {
+  position: absolute;
+  right: 5px;
+  top: 5px
+}
+
+#toggleLeft {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  top: 5px;
+  left: 405px;
+  cursor: pointer;
+  background-size: cover;
+  background-image: url('../assets/open.png');
+}
+
+#toggleLeft:hover {
+  background-image: url('../assets/open.png');
+}
