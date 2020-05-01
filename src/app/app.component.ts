@@ -37,8 +37,6 @@ export class AppComponent {
   private itemMap: Map<number, Array<AccountComponent>>;
   private items: Array<AccountComponent>
 
-  isBusy: boolean;
-
   @ViewChild('contentDiv', { static: false, read: ViewContainerRef }) contentDiv: ViewContainerRef;
   @ViewChild('bgCanvas', { static: false }) bgCanvas: ElementRef;
 
@@ -52,10 +50,6 @@ export class AppComponent {
     console.log('app init')
     this.messageService.accountNode$.subscribe(
       nodes => { this.showNodes(nodes) }
-    )
-
-    this.messageService.isBusy$.subscribe(
-      res => { this.isBusy = res; console.log(res) }
     )
 
     this.messageService.caseName$.subscribe(
@@ -198,9 +192,11 @@ export class AppComponent {
     item.position = { x: item.x + dx, y: item.y };
     //item后面的元素跟随移动
     let acc_index = items_level.indexOf(item);
+    let prevItem = item;
     for (let i = acc_index + 1; i < items_level.length; i++) {
       const element = items_level[i];
-      element.position = { x: element.x + dx, y: element.y }
+      element.position = { x: prevItem.x+prevItem.w + this.gap_w, y: element.y };
+      prevItem = element;
       console.log('跟随移动了' + dx)
     }
   }

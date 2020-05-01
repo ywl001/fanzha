@@ -5,6 +5,7 @@ import { BankAccount } from '../models/bankAccount';
 import { Observable } from 'rxjs';
 import { MessageService } from './message.service';
 import { PhpFunctionName } from '../models/phpFunctionName';
+import * as toastr from 'toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,8 @@ export class DataService {
   private duration;
   private caseID:number;
 
+  private times:number;
+
   nodes: Array<any> = [];
   waitCheckAccounts: Array<any> = [];
 
@@ -29,7 +32,7 @@ export class DataService {
     this.message.sendIsBusy(true)
     this.nodes = [];
     this.startTime = value.tradeTime;
-    this.endTime = moment(this.startTime).add(5, 'hours').format('YYYYMMDDHHmmss');
+    this.endTime = moment(this.startTime).add(8, 'hours').format('YYYYMMDDHHmmss');
 
     this.startAccount = new BankAccount()
     this.caseID = parseInt(value.caseID);
@@ -37,6 +40,8 @@ export class DataService {
     this.startAccount.accountNumber = value.account;
     this.startAccount.tradeTimes.push(moment(this.startTime))
     this.waitCheckAccounts.push(this.startAccount);
+
+    this.times =0;
     this.queryNodeByAccount(this.startAccount)
   }
 
@@ -57,6 +62,8 @@ export class DataService {
   }
 
   private processData(res) {
+    this.times++;
+    toastr.info(`查询了${this.times}个账号`)
     let nodeMap = new Map()
     if (res && res.length > 0) {
       for (let i = 0; i < res.length; i++) {
