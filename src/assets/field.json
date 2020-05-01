@@ -10,5 +10,16 @@
   "交易时间": "tradeTime",
   "交易流水号": "tradeNumber",
   "交易摘要": "tradeDesc",
-  "商户名称": "tradeName"
+  "商户名称": "tradeName",
+  "付款支付帐号":	"account",
+  "付款银行卡银行名称":"account_bankname",
+  "付款银行卡号":"account_bank",
+  "交易金额":"money",
+  "交易余额":"leftMoney",
+  "收款支付帐号":"otherAccount",
+  "收款银行卡银行名称":"other_bankName",
+  "收款银行卡号":"other_bank",
+  "交易主体的出入账标识":"inOrOut",
+  "收款方的商户名称":""
+
 }

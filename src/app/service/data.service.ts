@@ -13,10 +13,8 @@ import * as toastr from 'toastr';
 export class DataService {
 
   private startAccount: BankAccount;
-  private accountType;
   private startTime: string;
   private endTime: string;
-  private duration;
   private caseID:number;
 
   private times:number;
@@ -32,16 +30,10 @@ export class DataService {
     this.times = 0;
     this.message.sendIsBusy(true)
     this.nodes = [];
-<<<<<<< HEAD
     this.startTime = value.tradeTime
     console.log(this.startTime)
     this.endTime = moment(value.tradeTime).add(6, 'hours').format('YYYY-MM-DD HH:mm:ss');
     console.log(this.endTime)
-=======
-    this.startTime = value.tradeTime;
-    this.endTime = moment(this.startTime).add(8, 'hours').format('YYYYMMDDHHmmss');
-
->>>>>>> a20ecfee8e8d0271521bb55d5542e4aef98730e3
     this.startAccount = new BankAccount()
     this.caseID = parseInt(value.caseID);
     this.startAccount.accountName = value.accountName;
@@ -71,12 +63,7 @@ export class DataService {
   }
 
   private processData(res) {
-<<<<<<< HEAD
     console.timeEnd('query')
-=======
-    this.times++;
-    toastr.info(`查询了${this.times}个账号`)
->>>>>>> a20ecfee8e8d0271521bb55d5542e4aef98730e3
     let nodeMap = new Map()
     if (res && res.length > 0) {
       for (let i = 0; i < res.length; i++) {
@@ -108,9 +95,9 @@ export class DataService {
     this.nextAccount()
   }
 
-  private times = 0
   private nextAccount() {
-    toastr.info(`查询了${this.times}个账号`)
+    toastr.clear();
+    toastr.info(`查询了账号:${this.currentAccount.accountName}`)
     this.nodes.push(this.waitCheckAccounts.shift())
     if (this.waitCheckAccounts.length > 0) {
       this.times++;

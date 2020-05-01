@@ -27,7 +27,7 @@
               "src/styles.css",
               "./node_modules/toastr/build/toastr.css",
               "src/assets/alertify.core.css",
-              "src/assets/alertify.default.css",
+              "src/assets/alertify.default.css"
             ],
             "scripts": [
               "src/assets/alertify.min.js"
