@@ -19,6 +19,8 @@ export class DataService {
   private duration;
   private caseID:number;
 
+  private times:number;
+
   nodes: Array<any> = [];
   waitCheckAccounts: Array<any> = [];
 
@@ -30,16 +32,24 @@ export class DataService {
     this.times = 0;
     this.message.sendIsBusy(true)
     this.nodes = [];
+<<<<<<< HEAD
     this.startTime = value.tradeTime
     console.log(this.startTime)
     this.endTime = moment(value.tradeTime).add(6, 'hours').format('YYYY-MM-DD HH:mm:ss');
     console.log(this.endTime)
+=======
+    this.startTime = value.tradeTime;
+    this.endTime = moment(this.startTime).add(8, 'hours').format('YYYYMMDDHHmmss');
+
+>>>>>>> a20ecfee8e8d0271521bb55d5542e4aef98730e3
     this.startAccount = new BankAccount()
     this.caseID = parseInt(value.caseID);
     this.startAccount.accountName = value.accountName;
     this.startAccount.accountNumber = value.account;
     this.startAccount.tradeTimes.push(moment(this.startTime))
     this.waitCheckAccounts.push(this.startAccount);
+
+    this.times =0;
     this.queryNodeByAccount(this.startAccount)
   }
 
@@ -61,7 +71,12 @@ export class DataService {
   }
 
   private processData(res) {
+<<<<<<< HEAD
     console.timeEnd('query')
+=======
+    this.times++;
+    toastr.info(`查询了${this.times}个账号`)
+>>>>>>> a20ecfee8e8d0271521bb55d5542e4aef98730e3
     let nodeMap = new Map()
     if (res && res.length > 0) {
       for (let i = 0; i < res.length; i++) {
