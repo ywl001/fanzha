@@ -5,6 +5,7 @@ import { BankAccount } from '../models/bankAccount';
 import { Observable } from 'rxjs';
 import { MessageService } from './message.service';
 import { PhpFunctionName } from '../models/phpFunctionName';
+import * as toastr from 'toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -26,11 +27,13 @@ export class DataService {
   constructor(private sqlService: SqlService, private message: MessageService) { }
 
   set data(value) {
+    this.times = 0;
     this.message.sendIsBusy(true)
     this.nodes = [];
-    this.startTime = value.tradeTime;
-    this.endTime = moment(this.startTime).add(5, 'hours').format('YYYYMMDDHHmmss');
-
+    this.startTime = value.tradeTime
+    console.log(this.startTime)
+    this.endTime = moment(value.tradeTime).add(6, 'hours').format('YYYY-MM-DD HH:mm:ss');
+    console.log(this.endTime)
     this.startAccount = new BankAccount()
     this.caseID = parseInt(value.caseID);
     this.startAccount.accountName = value.accountName;
@@ -51,12 +54,14 @@ export class DataService {
       caseID:this.caseID
     }
 
+    console.time('query')
     this.sqlService.exec(PhpFunctionName.SELECT_ACCOUNT_OUT_RECROD,data).subscribe(
       res => { this.processData(res) }
     )
   }
 
   private processData(res) {
+    console.timeEnd('query')
     let nodeMap = new Map()
     if (res && res.length > 0) {
       for (let i = 0; i < res.length; i++) {
@@ -88,13 +93,16 @@ export class DataService {
     this.nextAccount()
   }
 
+  private times = 0
   private nextAccount() {
+    toastr.info(`查询了${this.times}个账号`)
     this.nodes.push(this.waitCheckAccounts.shift())
     if (this.waitCheckAccounts.length > 0) {
+      this.times++;
       this.queryNodeByAccount(this.waitCheckAccounts[0])
     } else {
       this.message.sendAccountNode(this.nodes)
-      this.message.sendIsBusy(false)
+      // this.message.sendIsBusy(false)
     }
   }
 }

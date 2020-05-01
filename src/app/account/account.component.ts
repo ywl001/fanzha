@@ -33,6 +33,7 @@ export class AccountComponent implements OnInit {
   private _position;
 
   children: Array<AccountComponent> = [];
+  parent:AccountComponent;
 
 
   private _data: BankAccount;

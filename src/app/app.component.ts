@@ -22,9 +22,9 @@ export class AppComponent {
 
   private field: any;
 
-  private currentCase:string;
+  private currentCase: string;
 
-  private gap_w: number = 50
+  private gap_w: number = 30;
   private gap_h: number = 100
   //是否布局
   private isLayout: boolean;
@@ -59,8 +59,12 @@ export class AppComponent {
     )
 
     this.messageService.caseName$.subscribe(
-      res=>{this.currentCase = res}
+      res => { this.currentCase = res }
     )
+  }
+
+  onAddCase() {
+    this.dialog.open(AddCaseComponent, { disableClose: true });
   }
 
   private showNodes(nodes) {
@@ -83,8 +87,10 @@ export class AppComponent {
       // 加入数组
       this.items.push(item);
       this.items.forEach(acc => {
-        if (acc.data.children.includes(node))
+        if (acc.data.children.includes(node)) {
           acc.children.push(item)
+          item.parent = acc;
+        }
       })
       // 加入map
       let j = item.level;
@@ -92,8 +98,22 @@ export class AppComponent {
     }
   }
 
-  onAddCase() {
-    this.dialog.open(AddCaseComponent, { disableClose: true });
+  sortItems() {
+    let arr = [];
+    arr.push(this.items[0]);
+    let len = this.items.length;
+    for (let i = 0; i < len; i++) {
+      let parent = arr[i];
+      for (let j = 0; j < len; j++) {
+        let child = this.items[j];
+        if (child.parent && child.parent == parent) {
+          arr.push(child)
+        }
+      }
+    }
+    this.items = arr;
+    // console.log(arr);
+    // console.log(this.items)
   }
 
   ngAfterViewChecked() {
@@ -102,6 +122,7 @@ export class AppComponent {
       return;
 
     if (this.isLayout) {
+      this.sortItems()
       this.firstLayout();
       for (let i = 0; i < 3; i++) {
         this.layout(this.items)
@@ -130,7 +151,6 @@ export class AppComponent {
       for (let j = 0; j < this.items.length; j++) {
         let child = this.items[j]
         if (parent.children.includes(child)) {
-          console.log('start draw')
           cxt.beginPath();
           cxt.moveTo(parent.x + parent.w / 2, parent.y + parent.h);//移动到父元素下边缘中点
           cxt.lineTo(parent.x + parent.w / 2, parent.y + parent.h + this.gap_h / 2);//画父元素中点向下gap/2
