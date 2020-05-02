@@ -10,6 +10,7 @@ import * as domtoimage from 'dom-to-image';
 import * as download from 'downloadjs'
 
 import gsap from 'gsap'
+import { Common } from './models/common';
 
 @Component({
   selector: 'app-root',
@@ -61,10 +62,28 @@ export class AppComponent {
     this.dialog.open(AddCaseComponent, { disableClose: true });
   }
 
+  private _before:number;
+  get before(){
+    return this._before
+  }
+  set before(value){
+    this._before = value;
+    Common.BEFORE_TIME = value;
+  }
+  private _after:number;
+  get after(){
+    return this._after;
+  }
+  set after(value){
+    this._after = value
+    Common.AFTER_TIME = value;
+  }
+
   private showNodes(nodes) {
     if (!nodes)
       return;
     console.log(nodes)
+    this.isLeftOpen = false;
     this.onClear()
     this.isLayout = true;
     this.isDraw = true;
@@ -106,8 +125,6 @@ export class AppComponent {
       }
     }
     this.items = arr;
-    // console.log(arr);
-    // console.log(this.items)
   }
 
   ngAfterViewChecked() {
@@ -215,7 +232,7 @@ export class AppComponent {
     let prevItem = item;
     for (let i = acc_index + 1; i < items_level.length; i++) {
       const element = items_level[i];
-      element.position = { x: prevItem.x+prevItem.w + this.gap_w, y: element.y };
+      element.position = { x: prevItem.x + prevItem.w + this.gap_w, y: element.y };
       prevItem = element;
       console.log('跟随移动了' + dx)
     }
@@ -297,5 +314,6 @@ export class AppComponent {
         download(dataUrl, `${this.currentCase}.jpg`);
       });
   }
+
 
 }

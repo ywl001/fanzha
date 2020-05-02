@@ -44,10 +44,22 @@
   width: 100%;
 }
 
-#btnClear {
+/* #btnClear {
   position: absolute;
-  right: 15px;
+  right: 20px;
   top: 5px
+} */
+
+.btnDiv{
+  position: absolute;
+  display:flex;
+  width: 100%;
+  flex-flow: row;
+  justify-content: flex-end;
+}
+
+.btnDiv > *{
+  margin-right: 20px;
 }
 
 #toggleLeft {

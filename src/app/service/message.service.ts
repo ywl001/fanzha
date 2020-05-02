@@ -5,16 +5,15 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class MessageService {
-
   private refresh = new BehaviorSubject('');
   private accountNode = new BehaviorSubject(null);
-  private isBusy = new BehaviorSubject(false);
+  private closeLeft = new BehaviorSubject('');
   private caseName = new BehaviorSubject('')
   private refreshChart = new BehaviorSubject('')
   
   refresh$ = this.refresh.asObservable();
   accountNode$ = this.accountNode.asObservable();
-  isBusy$ = this.isBusy.asObservable();
+  closeLeft$ = this.closeLeft.asObservable();
   caseName$ = this.caseName.asObservable();
   refreshChart$ = this.refreshChart.asObservable();
   
@@ -28,8 +27,8 @@ export class MessageService {
     this.refreshChart.next('')
   }
 
-  sendIsBusy(isBusy:boolean){
-    this.isBusy.next(isBusy)
+  sendCloseLeft(){
+    this.closeLeft.next('')
   }
 
   sendAccountNode(value){

@@ -10,7 +10,9 @@ import {
   MatRadioModule,
   MatDialogModule,
   MatExpansionModule,
-  MatDatepickerModule
+  MatDatepickerModule,
+  MatSliderModule,
+  MatCardModule
 } from '@angular/material';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import {
@@ -31,7 +33,7 @@ import { AddAccountComponent } from './add-account/add-account.component';
     AccountComponent,
     AddCaseComponent,
     RecordsComponent,
-    AddAccountComponent
+    AddAccountComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,6 +45,8 @@ import { AddAccountComponent } from './add-account/add-account.component';
     MatDialogModule,
     MatExpansionModule,
     MatDatepickerModule,
+    MatSliderModule,
+    MatCardModule,
     DragDropModule,
     HttpClientModule,
     FormsModule,

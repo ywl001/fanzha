@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { MessageService } from './message.service';
 import { PhpFunctionName } from '../models/phpFunctionName';
 import * as toastr from 'toastr';
+import { Common } from '../models/common';
 
 @Injectable({
   providedIn: 'root'
@@ -28,21 +29,21 @@ export class DataService {
 
   set data(value) {
     this.times = 0;
-    this.message.sendIsBusy(true)
+    
     this.nodes = [];
-    this.startTime = value.tradeTime
+    this.startTime = moment(value.tradeTime).subtract(Common.BEFORE_TIME,'h').format('YYYYMMDDHHmmss')
     console.log(this.startTime)
-    this.endTime = moment(value.tradeTime).add(6, 'hours').format('YYYY-MM-DD HH:mm:ss');
+    this.endTime = moment(value.tradeTime).add(Common.AFTER_TIME, 'h').format('YYYYMMDDHHmmss');
     console.log(this.endTime)
     this.startAccount = new BankAccount()
     this.caseID = parseInt(value.caseID);
     this.startAccount.accountName = value.accountName;
     this.startAccount.accountNumber = value.account;
-    this.startAccount.tradeTimes.push(moment(this.startTime))
-    this.waitCheckAccounts.push(this.startAccount);
+    this.startAccount.tradeTimes.push(moment(value.tradeTime))
 
-    this.times =0;
+    this.waitCheckAccounts.push(this.startAccount);
     this.queryNodeByAccount(this.startAccount)
+    this.times =0;
   }
 
   private currentAccount: BankAccount;
@@ -103,8 +104,8 @@ export class DataService {
       this.times++;
       this.queryNodeByAccount(this.waitCheckAccounts[0])
     } else {
-      this.message.sendAccountNode(this.nodes)
-      // this.message.sendIsBusy(false)
+      this.message.sendAccountNode(this.nodes);
+      this.message.sendCloseLeft()
     }
   }
 }

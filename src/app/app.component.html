@@ -10,6 +10,19 @@
       <div #contentDiv id='contentDiv'></div>
     </div>
   </div>
-  <button id="btnClear" mat-raised-button color="primary" (click)=onSaveImage()>保存图片</button>
+  <div class="btnDiv">
+    <mat-form-field style="width: 80px;">
+      <mat-label>转账前</mat-label>
+      <input matInput type="number" [(ngModel)]="before">
+    </mat-form-field>
+    <mat-form-field style="width: 80px;">
+      <mat-label>转账后</mat-label>
+      <input matInput type="number" [(ngModel)]="after">
+    </mat-form-field>
+    
+    <button id="btnClear" mat-raised-button color="primary" (click)=onSaveImage()>保存图片</button>
+
+  </div>
+ 
   <div id="toggleLeft" class="toggleLeft" (click)="onToggleLeft()"></div>
 </div>
