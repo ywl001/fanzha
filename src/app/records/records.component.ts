@@ -9,6 +9,7 @@ import { ExcelService } from '../service/excel.service';
 import { HttpClient } from '@angular/common/http';
 import { DataService } from '../service/data.service';
 import { PhpFunctionName } from '../models/phpFunctionName';
+import { Field } from '../models/field';
 declare var alertify;
 
 
@@ -57,8 +58,8 @@ export class RecordsComponent {
     this.getData();
     this.message.refresh$.subscribe(res => { this.getData() })
     this.message.refreshChart$.subscribe(
-      res=>{
-        if(this.currentItem){
+      res => {
+        if (this.currentItem) {
           this.dataService.data = this.currentItem;
         }
       }
@@ -66,7 +67,7 @@ export class RecordsComponent {
   }
 
   private getData() {
-    this.sqlService.exec(PhpFunctionName.SELECT_CASE_ACCOUNT,null).subscribe(
+    this.sqlService.exec(PhpFunctionName.SELECT_CASE_ACCOUNT, null).subscribe(
       res => {
         this.allRecords = res;
         let c = new Map();
@@ -110,11 +111,11 @@ export class RecordsComponent {
     });
     alertify.confirm("确定要删除吗？", e => {
       if (e) {
-        let data={
-          tableName:'start_account',
-          id:item.accountID
+        let data = {
+          tableName: 'start_account',
+          id: item.accountID
         }
-        this.sqlService.exec(PhpFunctionName.DEL,data).subscribe(res => this.getData())
+        this.sqlService.exec(PhpFunctionName.DEL, data).subscribe(res => this.getData())
       }
     });
   }
@@ -144,8 +145,11 @@ export class RecordsComponent {
     this.excelService.importExcel(file).subscribe(
       res => {
         let datas = [];
+        let isThird = this.isThird(res[0])
+        console.log('is third')
         for (let i = 0; i < res.length; i++) {
-          let o = this.convertDataKey(res[i]);
+          let o: any;
+          isThird ? o = this.convertDataKey_third(res[i]) : o = this.convertDataKey(res[i])
           datas.push(o);
         }
         this.insertData(datas)
@@ -166,14 +170,49 @@ export class RecordsComponent {
     let o = {};
     for (const key in data) {
       let newkey = this.field[key];
-      if (newkey)
+      if (newkey) {
+        let value = data[key];
+        if (value == '-')
+          value = null;
         o[newkey] = data[key]
+      }
     }
-    o['caseID'] = this.caseID
+    o[Field.caseID] = this.caseID
     return o;
   }
 
-  private isThird(){
-    return true;
+  private convertDataKey_third(data) {
+    let o = {};
+    for (const key in data) {
+      let newkey = this.field[key];
+      if (newkey) {
+        let value = data[key];
+        if (value == "-")
+          value = null;
+        o[newkey] = value;
+      }
+      // 交换值
+    }
+    if (o[Field.inOrOut] == '入') {
+      this.swipValue(o,Field.account,Field.oppositeAccount);
+      this.swipValue(o,Field.accountBankName,Field.oppositeBankName);
+      this.swipValue(o,Field.accountBankNumber, Field.oppositeBankNumber);
+    }
+    o[Field.inOrOut] == '出' ? o[Field.inOrOut] = '借' : o[Field.inOrOut] = '贷'
+    o[Field.caseID] = this.caseID
+    o[Field.isThird] = 1
+    return o;
+  }
+
+  private swipValue(o,p1,p2) {
+    let temp = o[p1];
+    o[p1] = o[p2];
+    o[p2] = temp;
+  }
+
+  private isThird(record) {
+    if (record.hasOwnProperty('付款支付帐号'))
+      return true;
+    return false;
   }
 }

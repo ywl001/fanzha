@@ -1,19 +1,20 @@
 import { Injectable } from '@angular/core';
 import { SqlService } from './sql.service';
 import * as moment from 'moment'
-import { BankAccount } from '../models/bankAccount';
+import { AccountNode } from '../models/accountNode';
 import { Observable } from 'rxjs';
 import { MessageService } from './message.service';
 import { PhpFunctionName } from '../models/phpFunctionName';
 import * as toastr from 'toastr';
 import { Common } from '../models/common';
+import { Field } from '../models/field';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
 
-  private startAccount: BankAccount;
+  private startAccount: AccountNode;
   private startTime: string;
   private endTime: string;
   private caseID:number;
@@ -23,7 +24,7 @@ export class DataService {
   nodes: Array<any> = [];
   waitCheckAccounts: Array<any> = [];
 
-  node$: Observable<Array<BankAccount>>;
+  node$: Observable<Array<AccountNode>>;
 
   constructor(private sqlService: SqlService, private message: MessageService) { }
 
@@ -35,10 +36,10 @@ export class DataService {
     console.log(this.startTime)
     this.endTime = moment(value.tradeTime).add(Common.AFTER_TIME, 'h').format('YYYYMMDDHHmmss');
     console.log(this.endTime)
-    this.startAccount = new BankAccount()
+    this.startAccount = new AccountNode()
     this.caseID = parseInt(value.caseID);
     this.startAccount.accountName = value.accountName;
-    this.startAccount.accountNumber = value.account;
+    this.startAccount.account = value.account;
     this.startAccount.tradeTimes.push(moment(value.tradeTime))
 
     this.waitCheckAccounts.push(this.startAccount);
@@ -46,12 +47,12 @@ export class DataService {
     this.times =0;
   }
 
-  private currentAccount: BankAccount;
+  private currentAccount: AccountNode;
 
-  private queryNodeByAccount(account: BankAccount) {
+  private queryNodeByAccount(account: AccountNode) {
     this.currentAccount = account;
     let data = {
-      account:account.accountNumber,
+      account:account.account,
       startTime:this.startTime,
       endTime:this.endTime,
       caseID:this.caseID
@@ -69,19 +70,29 @@ export class DataService {
     if (res && res.length > 0) {
       for (let i = 0; i < res.length; i++) {
         const item = res[i];
-        if (item.otherAccount) {
-          let key = item.otherAccount.trim()+'-'+item.level;
-          let acc:BankAccount;
+        let acc:AccountNode;
+        if(item[Field.lowerAccount]){
+          acc = new AccountNode();
+          acc.caseID = parseInt(item[Field.caseID]);
+          acc.account = item[Field.lowerAccount];
+          acc.level = this.currentAccount.level + 1;
+          acc.moneys.push(parseFloat(item.money));
+          acc.tradeTimes.push(moment(item.tradeTime));
+          this.currentAccount.children.push(acc);
+          acc.parentAccount = this.currentAccount;
+          this.waitCheckAccounts.push(acc);
+        }
+        if (item[Field.oppositeAccount]) {
+          let key = item[Field.oppositeAccount].trim();
           if(nodeMap.has(key)){
             acc = nodeMap.get(key);
             acc.moneys.push(parseFloat(item.money));
             acc.tradeTimes.push(moment(item.tradeTime))
           }else{
-            acc = new BankAccount();
-            acc.bankID = parseInt(item.id);
-            acc.caseID = parseInt(item.caseID);
-            acc.accountNumber = item.otherAccount;
-            acc.accountName = item.otherName;
+            acc = new AccountNode();
+            acc.caseID = parseInt(item[Field.caseID]);
+            acc.account = item[Field.oppositeAccount];
+            acc.accountName = item[Field.oppositeName];
             acc.level = this.currentAccount.level + 1;
             acc.moneys.push(parseFloat(item.money));
             acc.tradeTimes.push(moment(item.tradeTime))
@@ -91,9 +102,33 @@ export class DataService {
             this.waitCheckAccounts.push(acc);
           }
         }
+        else if(item[Field.oppositeBankNumber]){
+          acc = new AccountNode();
+            acc.caseID = parseInt(item[Field.caseID]);
+            acc.account = item[Field.oppositeBankNumber];
+            acc.accountName = item[Field.oppositeName];
+            acc.level = this.currentAccount.level + 1;
+            acc.moneys.push(parseFloat(item.money));
+            acc.tradeTimes.push(moment(item.tradeTime))
+            this.currentAccount.children.push(acc);
+            acc.parentAccount = this.currentAccount;
+            // nodeMap.set(key,acc)
+            this.waitCheckAccounts.push(acc);
+        }
       }
     }
     this.nextAccount()
+  }
+
+  private createNode(item){
+
+    let node = new AccountNode()
+    for (const key in item) {
+      if (node.hasOwnProperty(key)) {
+        node[key] = item[key];
+      }
+    }
+
   }
 
   private nextAccount() {

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { BankAccount } from '../models/bankAccount';
+import { AccountNode } from '../models/accountNode';
 import { SqlService } from '../service/sql.service';
 import { MessageService } from '../service/message.service';
 import { PhpFunctionName } from '../models/phpFunctionName';
@@ -36,15 +36,14 @@ export class AccountComponent implements OnInit {
   parent:AccountComponent;
 
 
-  private _data: BankAccount;
+  private _data: AccountNode;
 
-  set data(value: BankAccount) {
+  set data(value: AccountNode) {
     this._data = value;
     this.level = value.level;
-    this.bankID = value.bankID;
     this.caseID = value.caseID;
     this.accountName = value.accountName;
-    this.accountNumber = value.accountNumber;
+    this.accountNumber = value.account;
     this.moneys = value.moneys;
     this.tradeTimes = value.tradeTimes;
   }
