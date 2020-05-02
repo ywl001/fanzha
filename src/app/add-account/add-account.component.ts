@@ -4,6 +4,7 @@ import * as toastr from 'toastr';
 import { SqlService } from '../service/sql.service';
 import { MessageService } from '../service/message.service';
 import { PhpFunctionName } from '../models/phpFunctionName';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-add-account',
@@ -17,11 +18,22 @@ export class AddAccountComponent implements OnInit {
   caseID: string;
   account: string;
   accountName:string;
-  tradeTime: any;
+  private _tradeTime: any;
+
+  datetimeControl = new FormControl()
 
   ngOnInit() {
   }
 
+  get tradeTime(){
+    return this._tradeTime;
+  }
+
+  set tradeTime(value){
+    console.log(value)
+    console.log(typeof value)
+    this._tradeTime = value;
+  }
 
   onSubmit() {
     let data={
@@ -48,6 +60,13 @@ export class AddAccountComponent implements OnInit {
       accountName:this.accountName,
       caseID: this.caseID,
       tradeTime: moment(this.tradeTime).format('YYYYMMDDHHmmss')
+    }
+  }
+
+  onChange(e){
+    let value:string = e.target.value;
+    if(value.length == 14){
+       this.tradeTime = moment(value,'YYYYMMDDHHmmss').toDate();
     }
   }
 }

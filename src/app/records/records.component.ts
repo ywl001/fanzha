@@ -172,4 +172,8 @@ export class RecordsComponent {
     o['caseID'] = this.caseID
     return o;
   }
+
+  private isThird(){
+    return true;
+  }
 }
