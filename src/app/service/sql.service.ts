@@ -21,16 +21,16 @@ export class SqlService {
   //   return this.http.post(this.sqlUrl, { 'func': 'inser', 'data': data })
   // }
 
-  update(tableName, tableData, id) {
-    let sql = `update ${tableName} set `;
-    for (const key in tableData) {
-      sql += `${key}='${tableData[key]}',`
-    }
-    sql = sql.substr(0, sql.length - 1);
-    sql += ` where id = ${id}`;
-    console.log(sql)
-    return this.http.post<any>(this.sqlUrl, { 'sql': sql, 'action': 'edit' });
-  }
+  // update(tableName, tableData, id) {
+  //   let sql = `update ${tableName} set `;
+  //   for (const key in tableData) {
+  //     sql += `${key}='${tableData[key]}',`
+  //   }
+  //   sql = sql.substr(0, sql.length - 1);
+  //   sql += ` where id = ${id}`;
+  //   console.log(sql)
+  //   return this.http.post<any>(this.sqlUrl, { 'sql': sql, 'action': 'edit' });
+  // }
 
   // selectCaseAccount(){
   //   return this.http.post<Array<any>>(this.sqlUrl, { 'func': 'selectCaseAccount'})

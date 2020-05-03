@@ -11,6 +11,7 @@ import * as download from 'downloadjs'
 
 import gsap from 'gsap'
 import { Common } from './models/common';
+import { AccountNode } from './models/accountNode';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +27,7 @@ export class AppComponent {
   private currentCase: string;
 
   private gap_w: number = 30;
-  private gap_h: number = 100
+  private gap_h: number = 50
   //是否布局
   private isLayout: boolean;
   //是否绘制连接线
@@ -62,27 +63,27 @@ export class AppComponent {
     this.dialog.open(AddCaseComponent, { disableClose: true });
   }
 
-  private _before:number;
-  get before(){
+  private _before: number = 0;
+  get before() {
     return this._before
   }
-  set before(value){
+  set before(value) {
     this._before = value;
     Common.BEFORE_TIME = value;
   }
-  private _after:number;
-  get after(){
+  private _after: number = 1;
+  get after() {
     return this._after;
   }
-  set after(value){
+  set after(value) {
     this._after = value
     Common.AFTER_TIME = value;
   }
 
-  private showNodes(nodes) {
-    if (!nodes)
+  private showNodes(oldNodes) {
+    if (!oldNodes)
       return;
-    console.log(nodes)
+    let nodes = this.sortNodes(oldNodes)
     this.isLeftOpen = false;
     this.onClear()
     this.isLayout = true;
@@ -111,20 +112,25 @@ export class AppComponent {
     }
   }
 
-  sortItems() {
-    let arr = [];
-    arr.push(this.items[0]);
-    let len = this.items.length;
-    for (let i = 0; i < len; i++) {
-      let parent = arr[i];
-      for (let j = 0; j < len; j++) {
-        let child = this.items[j];
-        if (child.parent && child.parent == parent) {
-          arr.push(child)
+  private sortNodes(nodes: Array<AccountNode>) {
+    let newNodes = [];
+    for (let i = 0; i < nodes.length; i++) {
+      const element = nodes[i];
+      if (element.level == 0) {
+        newNodes.push(element)
+        break;
+      }
+    }
+    for (let i = 0; i < newNodes.length; i++) {
+      let parent = newNodes[i];
+      for (let j = 0; j < nodes.length; j++) {
+        const child = nodes[j];
+        if (parent.children.includes(child)) {
+          newNodes.push(child)
         }
       }
     }
-    this.items = arr;
+    return newNodes;
   }
 
   ngAfterViewChecked() {
@@ -133,7 +139,6 @@ export class AppComponent {
       return;
 
     if (this.isLayout) {
-      this.sortItems()
       this.firstLayout();
       for (let i = 0; i < 3; i++) {
         this.layout(this.items)
@@ -143,7 +148,7 @@ export class AppComponent {
 
     //绘制连接线
     if (this.isDraw) {
-      console.log('redraw')
+      // console.log('redraw')
       this.drawLine();
     }
     this.cdf.detectChanges()
@@ -151,7 +156,7 @@ export class AppComponent {
 
   private drawLine() {
     let canvasSize = this.getCanvasSize()
-    console.log(canvasSize)
+    // console.log(canvasSize)
     this.bgCanvas.nativeElement.width = canvasSize.w;
     this.bgCanvas.nativeElement.height = canvasSize.h;
 
@@ -202,11 +207,7 @@ export class AppComponent {
         if (dx > 0) {
           this.moveItem(element, dx)
         } else {
-          let children = element.children;
-          for (let i = 0; i < children.length; i++) {
-            const child = children[i];
-            this.moveItem(child, -dx)
-          }
+          this.moveItem(element.children[0],-dx)
         }
       }
     }
@@ -215,16 +216,16 @@ export class AppComponent {
   //获取下级对象的中点位置
   private getChildrenCenterX(parent) {
     let children: Array<AccountComponent> = parent.children;
-    children.sort((a, b) => a.x - b.x);
+    // children.sort((a, b) => a.x - b.x);
     let lastChild = children[children.length - 1];
     let firstChild = children[0];
-
+  
     return firstChild.x + (lastChild.x + lastChild.w - firstChild.x) / 2
   }
 
   // 移动元素x，dx移动的距离,基本原则是向右侧移动，右侧的元素也要移动
   private moveItem(item, dx) {
-    let items_level = this.itemMap.get(item.level);
+    let items_level = this.itemMap.get(item.data.level);
     // item设置位置
     item.position = { x: item.x + dx, y: item.y };
     //item后面的元素跟随移动

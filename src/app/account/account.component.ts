@@ -3,6 +3,9 @@ import { AccountNode } from '../models/accountNode';
 import { SqlService } from '../service/sql.service';
 import { MessageService } from '../service/message.service';
 import { PhpFunctionName } from '../models/phpFunctionName';
+import { MatDialog } from '@angular/material';
+import { AddLowerComponent } from '../add-lower/add-lower.component';
+import { AccountDetailComponent } from '../account-detail/account-detail.component';
 
 declare var alertify;
 
@@ -15,7 +18,9 @@ export class AccountComponent implements OnInit {
 
   @ViewChild('root', { static: false }) rootDiv: ElementRef;
 
-  constructor(private sqlService: SqlService,private message:MessageService) { }
+  constructor(private sqlService: SqlService,
+    public dialog: MatDialog,
+    private message:MessageService) { }
 
   w: number;
   h: number;
@@ -23,14 +28,9 @@ export class AccountComponent implements OnInit {
   x: number;
   y: number;
 
-  accountName: string;
-  accountNumber: string;
-  level: number;
-  moneys: Array<number>;
-  tradeTimes: Array<any>
-  bankID: number;
-  caseID:number;
   private _position;
+
+  level:number;
 
   children: Array<AccountComponent> = [];
   parent:AccountComponent;
@@ -41,11 +41,10 @@ export class AccountComponent implements OnInit {
   set data(value: AccountNode) {
     this._data = value;
     this.level = value.level;
-    this.caseID = value.caseID;
-    this.accountName = value.accountName;
-    this.accountNumber = value.account;
-    this.moneys = value.moneys;
-    this.tradeTimes = value.tradeTimes;
+  }
+
+  get data() {
+    return this._data;
   }
 
   set position(value) {
@@ -60,24 +59,20 @@ export class AccountComponent implements OnInit {
 
   get totalMoney() {
     let t = 0;
-    this.moneys.forEach(item => { t += item });
+    this.data.moneys.forEach(item => { t += item });
     return t;
   }
 
   get count() {
-    if (this.moneys && this.moneys.length > 1)
-      return this.moneys.length + '次'
+    if (this.data.moneys && this.data.moneys.length > 1)
+      return this.data.moneys.length + '次'
     return '';
   }
 
   get tradeTime() {
-    if (this.tradeTimes && this.tradeTimes.length > 0)
-      return this.tradeTimes[0].format('HH:mm');
+    if (this.data.tradeTimes && this.data.tradeTimes.length > 0)
+      return this.data.tradeTimes[0].format('HH:mm');
     return ''
-  }
-
-  get data() {
-    return this._data;
   }
 
   ngOnInit() {
@@ -95,9 +90,9 @@ export class AccountComponent implements OnInit {
     let boundingClientRect = element.getBoundingClientRect();
     console.log(boundingClientRect.x)
     let parentPosition = this.getPosition(element);
-    console.log('x: ' + (boundingClientRect.x - parentPosition.left), 'y: ' + (boundingClientRect.y - parentPosition.top));
     this.x = boundingClientRect.x - parentPosition.left
-    this.y = boundingClientRect.y - parentPosition.top
+    this.y = boundingClientRect.y - parentPosition.top;
+    console.log(this.x,this.y)
   }
 
   getPosition(el) {
@@ -121,14 +116,33 @@ export class AccountComponent implements OnInit {
     });
     alertify.confirm("确定要删除该记录吗？", e => {
       if (e) {
-        let data={
-          account:this.accountNumber,
-          caseID:this.caseID
-        }
-        this.sqlService.exec(PhpFunctionName.DEL_RECORD_BY_ACCOUNT,data).subscribe(res => {
+        if(this.data.oppositeAccount){
+          let data={
+            account:this.data.oppositeAccount,
+            caseID:this.data.caseID
+          }
+          this.sqlService.exec(PhpFunctionName.DEL_RECORD_BY_ACCOUNT,data).subscribe(res => {
+              this.message.sendRefreshChart()
+          })
+        }else{
+          let data = {
+            tableName:'trade_record',
+            id:this.data.id
+          }
+          this.sqlService.exec(PhpFunctionName.DEL,data).subscribe(res=>{
             this.message.sendRefreshChart()
-        })
+          })
+        }
       }
     });
+  }
+
+  onConnect(){
+    let dialogRef = this.dialog.open(AddLowerComponent, { disableClose: true });
+    dialogRef.componentInstance.data = this.data;
+  }
+  onClick(){
+    let dialogRef = this.dialog.open(AccountDetailComponent);
+    dialogRef.componentInstance.data = this.data;
   }
 }

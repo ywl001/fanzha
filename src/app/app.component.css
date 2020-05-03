@@ -53,9 +53,10 @@
 .btnDiv{
   position: absolute;
   display:flex;
-  width: 100%;
+  width: 300px;
   flex-flow: row;
   justify-content: flex-end;
+  right: 10px;
 }
 
 .btnDiv > *{

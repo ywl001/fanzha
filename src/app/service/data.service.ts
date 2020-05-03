@@ -17,9 +17,9 @@ export class DataService {
   private startAccount: AccountNode;
   private startTime: string;
   private endTime: string;
-  private caseID:number;
+  private caseID: number;
 
-  private times:number;
+  private times: number;
 
   nodes: Array<any> = [];
   waitCheckAccounts: Array<any> = [];
@@ -30,110 +30,122 @@ export class DataService {
 
   set data(value) {
     this.times = 0;
-    
+
     this.nodes = [];
-    this.startTime = moment(value.tradeTime).subtract(Common.BEFORE_TIME,'h').format('YYYYMMDDHHmmss')
+    this.startTime = moment(value.tradeTime).subtract(Common.BEFORE_TIME, 'h').format('YYYYMMDDHHmmss')
     console.log(this.startTime)
     this.endTime = moment(value.tradeTime).add(Common.AFTER_TIME, 'h').format('YYYYMMDDHHmmss');
     console.log(this.endTime)
     this.startAccount = new AccountNode()
     this.caseID = parseInt(value.caseID);
     this.startAccount.accountName = value.accountName;
-    this.startAccount.account = value.account;
+    this.startAccount.oppositeAccount = value.account;
     this.startAccount.tradeTimes.push(moment(value.tradeTime))
 
     this.waitCheckAccounts.push(this.startAccount);
     this.queryNodeByAccount(this.startAccount)
-    this.times =0;
+    this.times = 0;
+  }
+
+  private getMinTime(datetimes){
+    let a = datetimes[0];
+    for (let i = 0; i < datetimes.length; i++) {
+      const time = datetimes[i];
+      if(time.isSameOrBefore(a))
+        a = time;
+    }
+    return a;
   }
 
   private currentAccount: AccountNode;
 
-  private queryNodeByAccount(account: AccountNode) {
-    this.currentAccount = account;
+  private queryNodeByAccount(node: AccountNode) {
+    this.currentAccount = node;
+    let startMoment = this.getMinTime(node.tradeTimes)
     let data = {
-      account:account.account,
-      startTime:this.startTime,
-      endTime:this.endTime,
-      caseID:this.caseID
+      startTime: startMoment.format('YYYY-MM-DD HH:mm:ss'),
+      endTime: startMoment.clone().add(Common.AFTER_TIME,'h').format('YYYY-MM-DD HH:mm:ss'),
+      caseID: this.caseID
+    }
+    console.log(data.startTime,data.endTime)
+    if (node.isThird && node.isThird == '1') {
+      if (node.oppositeAccount || node.oppositeBankNumber)
+        data['account'] = node.oppositeBankNumber ? node.oppositeBankNumber : node.oppositeAccount
+    } else {
+      data['account'] = node.oppositeAccount
     }
 
-    console.time('query')
-    this.sqlService.exec(PhpFunctionName.SELECT_ACCOUNT_OUT_RECROD,data).subscribe(
-      res => { this.processData(res) }
-    )
+    if (!data['account']) {
+      this.nextAccount()
+    } else {
+      console.time('query')
+      this.sqlService.exec(PhpFunctionName.SELECT_ACCOUNT_OUT_RECROD, data).subscribe(
+        res => { this.processData(res) }
+      )
+    }
   }
 
   private processData(res) {
     console.timeEnd('query')
-    let nodeMap = new Map()
     if (res && res.length > 0) {
+      let nodeMap = new Map()
       for (let i = 0; i < res.length; i++) {
         const item = res[i];
-        let acc:AccountNode;
-        if(item[Field.lowerAccount]){
-          acc = new AccountNode();
-          acc.caseID = parseInt(item[Field.caseID]);
-          acc.account = item[Field.lowerAccount];
-          acc.level = this.currentAccount.level + 1;
-          acc.moneys.push(parseFloat(item.money));
-          acc.tradeTimes.push(moment(item.tradeTime));
-          this.currentAccount.children.push(acc);
-          acc.parentAccount = this.currentAccount;
-          this.waitCheckAccounts.push(acc);
-        }
-        if (item[Field.oppositeAccount]) {
-          let key = item[Field.oppositeAccount].trim();
-          if(nodeMap.has(key)){
-            acc = nodeMap.get(key);
-            acc.moneys.push(parseFloat(item.money));
-            acc.tradeTimes.push(moment(item.tradeTime))
-          }else{
-            acc = new AccountNode();
-            acc.caseID = parseInt(item[Field.caseID]);
-            acc.account = item[Field.oppositeAccount];
-            acc.accountName = item[Field.oppositeName];
-            acc.level = this.currentAccount.level + 1;
-            acc.moneys.push(parseFloat(item.money));
-            acc.tradeTimes.push(moment(item.tradeTime))
-            this.currentAccount.children.push(acc);
-            acc.parentAccount = this.currentAccount;
-            nodeMap.set(key,acc)
-            this.waitCheckAccounts.push(acc);
+        let node: AccountNode;
+        let key = item[Field.isThird] == '1' ? item[Field.oppositeAccount] + item[Field.oppositeBankNumber] : item[Field.oppositeAccount];
+        if (key) {
+          if (nodeMap.has(key)) {
+            this.createNode(nodeMap.get(key), item)
+          } else {
+            node = this.createNode(null, item);
+            nodeMap.set(key, node);
+            this.waitCheckAccounts.push(node)
           }
+        } else {
+          if(item.payeeName == '手续费' || Math.abs(parseFloat(item.money)) < 100)
+            continue;
+          node = this.createNode(null, item);
+          this.nodes.push(node)
         }
-        else if(item[Field.oppositeBankNumber]){
-          acc = new AccountNode();
-            acc.caseID = parseInt(item[Field.caseID]);
-            acc.account = item[Field.oppositeBankNumber];
-            acc.accountName = item[Field.oppositeName];
-            acc.level = this.currentAccount.level + 1;
-            acc.moneys.push(parseFloat(item.money));
-            acc.tradeTimes.push(moment(item.tradeTime))
-            this.currentAccount.children.push(acc);
-            acc.parentAccount = this.currentAccount;
-            // nodeMap.set(key,acc)
-            this.waitCheckAccounts.push(acc);
+
+        if (item.lowerAccount) {
+          let lowerNode = new AccountNode();
+          lowerNode.account = item.account;
+          lowerNode.oppositeAccount = item.lowerAccount;
+          lowerNode.moneys.push(item.money);
+          lowerNode.tradeTimes.push(moment(item.tradeTime));
+          lowerNode.level = node.level + 1;
+          lowerNode.parentAccount = node;
+          node.children.push(lowerNode);
+          this.waitCheckAccounts.push(lowerNode)
         }
       }
     }
     this.nextAccount()
   }
 
-  private createNode(item){
-
-    let node = new AccountNode()
-    for (const key in item) {
-      if (node.hasOwnProperty(key)) {
-        node[key] = item[key];
+  private createNode(node: AccountNode, item) {
+    if (!node) {
+      node = new AccountNode()
+      for (const key in item) {
+        if (node.hasOwnProperty(key)) {
+          node[key] = item[key];
+        }
       }
+      node.level = this.currentAccount.level + 1;
+      this.currentAccount.children.push(node);
+      node.parentAccount = this.currentAccount;
     }
-
+    node.moneys.push(parseFloat(item[Field.money]));
+    node.tradeTimes.push(moment(item[Field.tradeTime]))
+    node.leftMoneys.push(parseFloat(item[Field.leftMoney]))
+    node.tradeNumbers.push(item[Field.tradeNumber])
+    return node;
   }
 
   private nextAccount() {
     toastr.clear();
-    toastr.info(`查询了账号:${this.currentAccount.accountName}`)
+    toastr.info(`查询了账号:${this.currentAccount.oppositeAccount}`)
     this.nodes.push(this.waitCheckAccounts.shift())
     if (this.waitCheckAccounts.length > 0) {
       this.times++;

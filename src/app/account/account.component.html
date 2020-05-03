@@ -1,6 +1,7 @@
-<div #root id="root" [cdkDragFreeDragPosition]="position" cdkDragLockAxis="x" cdkDrag (cdkDragMoved) = onMoving($event)>
-    <p>{{tradeTime}}--{{count}}--{{totalMoney}}元</p>
-    <p>{{accountName}}</p>
-    <p>{{accountNumber}}</p>
-    <div class="btnDel" (click)="onDelete();$event.stopPropagation();"></div>
+<div #root id="root" [cdkDragFreeDragPosition]="position" cdkDragLockAxis="x" cdkDrag (cdkDragMoved)=onMoving($event) (click)=onClick()>
+  <p>{{tradeTime}}--{{count}}--{{totalMoney}}元</p>
+  <p>{{data.oppositeAccount}}<span *ngIf="!data.oppositeAccount">{{data.payeeName}}</span></p>
+  <p>{{data.oppositeName}}<span *ngIf="!data.oppositeAccount">{{data.tradeType}}</span></p>
+  <div class="btnDel" (click)="onDelete();$event.stopPropagation();"></div>
+  <div class="btnConnect" (click)="onConnect();$event.stopPropagation();"></div>
 </div>

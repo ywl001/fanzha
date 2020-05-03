@@ -128,7 +128,6 @@ export class RecordsComponent {
   private files;
   onFileChange(event) {
     this.files = event.target.files;
-    console.log('on file change')
     this.insertExcel()
   }
 
@@ -160,6 +159,7 @@ export class RecordsComponent {
     this.sqlService.exec(PhpFunctionName.INSERT_ARRAY, records).subscribe(
       res => {
         this.fileIndex++;
+        toastr.clear()
         toastr.info(`成功导入${records.length}条数据`)
         this.insertExcel()
       }
@@ -172,9 +172,9 @@ export class RecordsComponent {
       let newkey = this.field[key];
       if (newkey) {
         let value = data[key];
-        if (value == '-')
+        if (value === '-')
           value = null;
-        o[newkey] = data[key]
+        o[newkey] = value;
       }
     }
     o[Field.caseID] = this.caseID
@@ -187,7 +187,7 @@ export class RecordsComponent {
       let newkey = this.field[key];
       if (newkey) {
         let value = data[key];
-        if (value == "-")
+        if (value === "-")
           value = null;
         o[newkey] = value;
       }

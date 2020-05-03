@@ -11,8 +11,8 @@ import {
   MatDialogModule,
   MatExpansionModule,
   MatDatepickerModule,
-  MatSliderModule,
-  MatCardModule
+  MatCheckboxModule
+
 } from '@angular/material';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import {
@@ -26,6 +26,8 @@ import { AccountComponent } from './account/account.component';
 import { AddCaseComponent } from './add-case/add-case.component'
 import { RecordsComponent } from './records/records.component';
 import { AddAccountComponent } from './add-account/add-account.component';
+import { AddLowerComponent } from './add-lower/add-lower.component';
+import { AccountDetailComponent } from './account-detail/account-detail.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,8 @@ import { AddAccountComponent } from './add-account/add-account.component';
     AddCaseComponent,
     RecordsComponent,
     AddAccountComponent,
+    AddLowerComponent,
+    AccountDetailComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,8 +49,7 @@ import { AddAccountComponent } from './add-account/add-account.component';
     MatDialogModule,
     MatExpansionModule,
     MatDatepickerModule,
-    MatSliderModule,
-    MatCardModule,
+    MatCheckboxModule,
     DragDropModule,
     HttpClientModule,
     FormsModule,
@@ -57,6 +60,6 @@ import { AddAccountComponent } from './add-account/add-account.component';
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [AccountComponent, AddCaseComponent, AddAccountComponent]
+  entryComponents: [AccountComponent, AddCaseComponent, AddAccountComponent,AddLowerComponent,AccountDetailComponent]
 })
 export class AppModule { }

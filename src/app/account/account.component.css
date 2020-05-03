@@ -22,3 +22,20 @@
   background-image: url('../../assets/delete_over.png');
   opacity: 1;
 }
+
+.btnConnect {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background-image: url('../../assets/connect.png');
+  background-size: 100% auto; 
+  cursor: pointer;
+  top:8px;
+  right: 35px;
+  opacity: 0.3;
+}
+
+.btnConnect:hover{
+  background-image: url('../../assets/connect_over.png');
+  opacity: 1;
+}

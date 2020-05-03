@@ -1,5 +1,6 @@
 export class AccountNode {
-    caseID:number = 0;
+    id:string = '';
+    caseID:string = '';
     level:number = 0;
     account:string = '';
     accountName:string = '';
@@ -9,8 +10,8 @@ export class AccountNode {
     tradeTimes:Array<any> = []
     leftMoneys = []
     tradeNumbers = []
-    tradeDescs = []
-
+    
+    tradeDesc=''
     accountBankName = ''
     accountBankNumber = ''
     oppositeAccount = ''
@@ -20,7 +21,7 @@ export class AccountNode {
     inOrOut = ''
     tradeType = ''
     tradeResult = ''
-    isThird = 0
+    isThird = ''
     payeeName = ''
     payeeNumber = ''
 }
