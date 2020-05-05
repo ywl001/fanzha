@@ -1,0 +1,14 @@
+<h1 matDialogTitle>设置查询时长</h1>
+
+<mat-dialog-content style="height: 100px;">
+  <mat-form-field style="width: 350px;">
+    <mat-label>查询时常（小时）</mat-label>
+    <input matInput [(ngModel)]='queryDuration' type="number">
+  </mat-form-field>
+  <br/>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button matDialogClose>取消</button>
+  <button mat-button (click) = onSubmit() matDialogClose>确定</button>
+</mat-dialog-actions>

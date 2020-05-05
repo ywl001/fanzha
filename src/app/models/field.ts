@@ -1,4 +1,5 @@
 export class Field{
+    static id = 'id'
     static account = 'account'
     static accountBankName = 'accountBankName'
     static accountBankNumber = 'accountBankNumber'
@@ -19,4 +20,5 @@ export class Field{
     static payeeName = 'payeeName'
     static payeeNumber = 'payeeNumber'
     static lowerAccount = 'lowerAccount'
+    static queryDuration = 'queryDuration'
 }

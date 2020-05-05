@@ -28,6 +28,7 @@ import { RecordsComponent } from './records/records.component';
 import { AddAccountComponent } from './add-account/add-account.component';
 import { AddLowerComponent } from './add-lower/add-lower.component';
 import { AccountDetailComponent } from './account-detail/account-detail.component';
+import { SetDurationComponent } from './set-duration/set-duration.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { AccountDetailComponent } from './account-detail/account-detail.componen
     AddAccountComponent,
     AddLowerComponent,
     AccountDetailComponent,
+    SetDurationComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,6 +62,6 @@ import { AccountDetailComponent } from './account-detail/account-detail.componen
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [AccountComponent, AddCaseComponent, AddAccountComponent,AddLowerComponent,AccountDetailComponent]
+  entryComponents: [AccountComponent, AddCaseComponent, AddAccountComponent,AddLowerComponent,AccountDetailComponent,SetDurationComponent]
 })
 export class AppModule { }

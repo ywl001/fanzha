@@ -4,4 +4,5 @@
   <p>{{data.oppositeName}}<span *ngIf="!data.oppositeAccount">{{data.tradeType}}</span></p>
   <div class="btnDel" (click)="onDelete();$event.stopPropagation();"></div>
   <div class="btnConnect" (click)="onConnect();$event.stopPropagation();"></div>
+  <div class="btnDuration" (click)="onSetDuration();$event.stopPropagation();"></div>
 </div>

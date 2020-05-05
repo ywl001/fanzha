@@ -140,11 +140,12 @@ export class AppComponent {
 
     if (this.isLayout) {
       this.firstLayout();
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 5; i++) {
         this.layout(this.items)
       }
       this.isLayout = false;
     }
+
 
     //绘制连接线
     if (this.isDraw) {
@@ -207,7 +208,7 @@ export class AppComponent {
         if (dx > 0) {
           this.moveItem(element, dx)
         } else {
-          this.moveItem(element.children[0],-dx)
+          this.moveItem(element.children[0], -dx)
         }
       }
     }
@@ -219,7 +220,7 @@ export class AppComponent {
     // children.sort((a, b) => a.x - b.x);
     let lastChild = children[children.length - 1];
     let firstChild = children[0];
-  
+
     return firstChild.x + (lastChild.x + lastChild.w - firstChild.x) / 2
   }
 

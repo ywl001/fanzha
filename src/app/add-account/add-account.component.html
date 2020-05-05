@@ -18,6 +18,11 @@
     </ngx-mat-datetime-picker>
   </mat-form-field>
 
+  <mat-form-field>
+    <mat-label>转账金额：</mat-label>
+    <input [(ngModel)]="money" matInput>
+  </mat-form-field>
+
 
   <div class='btnContainer'>
     <button mat-raised-button color='primary' mat-dialog-close (click)=onSubmit()>确定</button>

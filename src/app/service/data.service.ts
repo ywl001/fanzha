@@ -32,7 +32,7 @@ export class DataService {
     this.times = 0;
 
     this.nodes = [];
-    this.startTime = moment(value.tradeTime).subtract(Common.BEFORE_TIME, 'h').format('YYYYMMDDHHmmss')
+    this.startTime = moment(value.tradeTime).format('YYYYMMDDHHmmss')
     console.log(this.startTime)
     this.endTime = moment(value.tradeTime).add(Common.AFTER_TIME, 'h').format('YYYYMMDDHHmmss');
     console.log(this.endTime)
@@ -40,7 +40,8 @@ export class DataService {
     this.caseID = parseInt(value.caseID);
     this.startAccount.accountName = value.accountName;
     this.startAccount.oppositeAccount = value.account;
-    this.startAccount.tradeTimes.push(moment(value.tradeTime))
+    this.startAccount.tradeTimes.push(moment(value.tradeTime));
+    this.startAccount.moneys.push(parseFloat(value.money))
 
     this.waitCheckAccounts.push(this.startAccount);
     this.queryNodeByAccount(this.startAccount)
@@ -62,9 +63,16 @@ export class DataService {
   private queryNodeByAccount(node: AccountNode) {
     this.currentAccount = node;
     let startMoment = this.getMinTime(node.tradeTimes)
+    let startTime = startMoment.format('YYYY-MM-DD HH:mm:ss');
+    let endTime;
+    if(node.queryDuration && node.queryDuration > 0){
+      endTime = startMoment.clone().add(node.queryDuration,'h').format('YYYY-MM-DD HH:mm:ss');
+    }else{
+      endTime = startMoment.clone().add(Common.AFTER_TIME,'h').format('YYYY-MM-DD HH:mm:ss');
+    }
     let data = {
-      startTime: startMoment.format('YYYY-MM-DD HH:mm:ss'),
-      endTime: startMoment.clone().add(Common.AFTER_TIME,'h').format('YYYY-MM-DD HH:mm:ss'),
+      startTime: startTime,
+      endTime: endTime,
       caseID: this.caseID
     }
     console.log(data.startTime,data.endTime)
@@ -102,20 +110,26 @@ export class DataService {
             this.waitCheckAccounts.push(node)
           }
         } else {
+          //空账号
           if(item.payeeName == '手续费' || Math.abs(parseFloat(item.money)) < 100)
             continue;
-          node = this.createNode(null, item);
-          this.nodes.push(node)
+          else{
+            node = this.createNode(null, item);
+            this.nodes.push(node)
+          }
         }
 
+        //模拟下级账号
         if (item.lowerAccount) {
           let lowerNode = new AccountNode();
           lowerNode.account = item.account;
           lowerNode.oppositeAccount = item.lowerAccount;
-          lowerNode.moneys.push(item.money);
+          lowerNode.moneys.push(parseFloat(item.money));
           lowerNode.tradeTimes.push(moment(item.tradeTime));
           lowerNode.level = node.level + 1;
           lowerNode.parentAccount = node;
+          lowerNode.id = item.id;
+          lowerNode.queryDuration = item.queryDuration;
           node.children.push(lowerNode);
           this.waitCheckAccounts.push(lowerNode)
         }
@@ -129,6 +143,9 @@ export class DataService {
       node = new AccountNode()
       for (const key in item) {
         if (node.hasOwnProperty(key)) {
+          if(key == Field.queryDuration){
+            node[key] = parseFloat(item[key])
+          }
           node[key] = item[key];
         }
       }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountNode } from '../models/accountNode';
+import * as moment from 'moment'
 
 @Component({
   selector: 'app-account-detail',

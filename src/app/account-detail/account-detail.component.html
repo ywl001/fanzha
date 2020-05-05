@@ -1,62 +1,25 @@
 <h1 matDialogTitle>交易明细</h1>
 
 <mat-dialog-content>
-  <p>
-    <mat-label>查询账号：{{data.account}}</mat-label>
-  </p>
-  <p>
-    <mat-label>对方账号姓名：{{data.oppositeName}}</mat-label>
-  </p>
-  <p>
-    <mat-label>对方账号卡号：{{data.oppositeAccount}}</mat-label>
-  </p>
-  <p>
-    <mat-label>金额：{{data.moneys}}</mat-label>
-  </p>
-  <p>
-    <mat-label>交易类型：{{data.tradeType}}</mat-label>
-  </p>
-  <p>
-    <mat-label>交易结果：{{data.tradeResult}}</mat-label>
-  </p>
-  <p>
-    <mat-label>交易时间：{{data.tradeTimes}}</mat-label>
-  </p>
-  <p>
-    <mat-label>交易流水号：{{data.tradeNumber}}</mat-label>
-  </p>
-  <p>
-    <mat-label>交易摘要：{{data.tradeDesc}}</mat-label>
-  </p>
-  <p>
-    <mat-label>商户名称：{{data.payeeName}}</mat-label>
-  </p>
-  <p>
-    <mat-label>付款支付帐号：{{data.account}}</mat-label>
-  </p>
-  <p>
-    <mat-label>付款银行卡银行名称：{{data.accountBankName}}</mat-label>
-  </p>
-  <p>
-    <mat-label>付款银行卡号：{{data.accountBankNumber}}</mat-label>
-  </p>
-  <p>
-    <mat-label>收款支付帐号：{{data.oppositeAccount}}</mat-label>
-  </p>
-  <p>
-    <mat-label>收款银行卡银行名称：{{data.oppositeBankName}}</mat-label>
-  </p>
-  <p>
-    <mat-label>收款银行卡号：{{data.oppositeBankNumber}}</mat-label>
-  </p>
-  <p>
-    <mat-label>交易主体的出入账标识：{{data.inOrOut}}</mat-label>
-  </p>
-  <p>
-    <mat-label>收款方的商户名称：{{data.payeeName}}</mat-label>
-  </p>
-  <p>
-    <mat-label>收款方的商户号：{{data.payeeNumber}}</mat-label>
-  </p>
-</mat-dialog-content>
+  <p *ngIf="data.account">查询账号：{{data.account}}</p>
 
+  <p *ngIf="data.accountBankName">付款银行卡银行名称：{{data.accountBankName}}</p>
+  <p *ngIf="data.accountBankNumber"> 付款银行卡号：{{data.accountBankNumber}}</p>
+  <p *ngIf='data.oppositeName'>对方账号姓名：{{data.oppositeName}}</p>
+  <p *ngIf="data.oppositeAccount"> 对方账号卡号：{{data.oppositeAccount}}</p>
+  <p *ngIf="data.oppositeBankName"> 收款银行卡银行名称：{{data.oppositeBankName}}</p>
+  <p *ngIf="data.oppositeBankNumber"> 收款银行卡号：{{data.oppositeBankNumber}}</p>
+
+
+  <p *ngFor="let time of data.tradeTimes; let i = index">
+    交易时间：{{time.format('HH:mm')}}----->{{data.moneys[i]}}元--->流水号：{{data.tradeNumbers[i]}}
+  </p>
+
+
+  <p *ngIf="data.tradeType"> 交易类型：{{data.tradeType}}</p>
+  <p *ngIf="data.tradeResult"> 交易结果：{{data.tradeResult}}</p>
+  <p *ngIf="data.tradeDesc"> 交易摘要：{{data.tradeDesc}}</p>
+  <p *ngIf="data.payeeNumber"> 商户名称：{{data.payeeName}}</p>
+  <p *ngIf="data.inOrOut"> 借贷标志：{{data.inOrOut}}</p>
+  <p *ngIf="data.payeeNumber"> 收款方的商户号：{{data.payeeNumber}}</p>
+</mat-dialog-content>

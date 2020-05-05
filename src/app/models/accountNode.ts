@@ -24,4 +24,5 @@ export class AccountNode {
     isThird = ''
     payeeName = ''
     payeeNumber = ''
+    queryDuration:number = 0;
 }

@@ -18,6 +18,7 @@ export class AddAccountComponent implements OnInit {
   caseID: string;
   account: string;
   accountName:string;
+  money:number;
   private _tradeTime: any;
 
   datetimeControl = new FormControl()
@@ -58,6 +59,7 @@ export class AddAccountComponent implements OnInit {
     return {
       account: this.account,
       accountName:this.accountName,
+      money:this.money,
       caseID: this.caseID,
       tradeTime: moment(this.tradeTime).format('YYYYMMDDHHmmss')
     }

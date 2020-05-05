@@ -6,6 +6,7 @@ import { PhpFunctionName } from '../models/phpFunctionName';
 import { MatDialog } from '@angular/material';
 import { AddLowerComponent } from '../add-lower/add-lower.component';
 import { AccountDetailComponent } from '../account-detail/account-detail.component';
+import { SetDurationComponent } from '../set-duration/set-duration.component';
 
 declare var alertify;
 
@@ -143,6 +144,11 @@ export class AccountComponent implements OnInit {
   }
   onClick(){
     let dialogRef = this.dialog.open(AccountDetailComponent);
+    dialogRef.componentInstance.data = this.data;
+  }
+
+  onSetDuration(){
+    let dialogRef = this.dialog.open(SetDurationComponent);
     dialogRef.componentInstance.data = this.data;
   }
 }

@@ -39,3 +39,20 @@
   background-image: url('../../assets/connect_over.png');
   opacity: 1;
 }
+
+.btnDuration {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background-image: url('../../assets/duration.png');
+  background-size: 100% auto; 
+  cursor: pointer;
+  top:8px;
+  right: 65px;
+  opacity: 0.2;
+}
+
+.btnDuration:hover{
+  background-image: url('../../assets/duration_over.png');
+  opacity: 1;
+}
