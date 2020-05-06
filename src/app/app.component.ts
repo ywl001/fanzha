@@ -63,14 +63,6 @@ export class AppComponent {
     this.dialog.open(AddCaseComponent, { disableClose: true });
   }
 
-  private _before: number = 0;
-  get before() {
-    return this._before
-  }
-  set before(value) {
-    this._before = value;
-    Common.BEFORE_TIME = value;
-  }
   private _after: number = 1;
   get after() {
     return this._after;

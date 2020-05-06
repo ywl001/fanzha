@@ -9,7 +9,6 @@ import { ExcelService } from '../service/excel.service';
 import { HttpClient } from '@angular/common/http';
 import { DataService } from '../service/data.service';
 import { PhpFunctionName } from '../models/phpFunctionName';
-import { Field } from '../models/field';
 declare var alertify;
 
 
@@ -177,7 +176,7 @@ export class RecordsComponent {
         o[newkey] = value;
       }
     }
-    o[Field.caseID] = this.caseID
+    o['caseID'] = this.caseID
     return o;
   }
 
@@ -193,14 +192,14 @@ export class RecordsComponent {
       }
       // 交换值
     }
-    if (o[Field.inOrOut] == '入') {
-      this.swipValue(o,Field.account,Field.oppositeAccount);
-      this.swipValue(o,Field.accountBankName,Field.oppositeBankName);
-      this.swipValue(o,Field.accountBankNumber, Field.oppositeBankNumber);
+    if (o['inOrOut'] == '入') {
+      this.swipValue(o,'account','oppositeAccount');
+      this.swipValue(o,'accountBankName','oppositeBankName');
+      this.swipValue(o,'accountBankNumber', 'oppositeBankNumber');
     }
-    o[Field.inOrOut] == '出' ? o[Field.inOrOut] = '借' : o[Field.inOrOut] = '贷'
-    o[Field.caseID] = this.caseID
-    o[Field.isThird] = 1
+    o['inOrOut'] == '出' ? o['inOrOut'] = '借' : o['inOrOut'] = '贷'
+    o['caseID'] = this.caseID
+    o['isThird'] = 1
     return o;
   }
 

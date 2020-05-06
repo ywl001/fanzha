@@ -1,6 +1,6 @@
 {
     "/fanzha": {
-        "target": "http://114.115.201.238",
+        "target": "http://localhost",
         "secure": false
     }
 }

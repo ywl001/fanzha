@@ -9,13 +9,9 @@
   <p *ngIf="data.oppositeAccount"> 对方账号卡号：{{data.oppositeAccount}}</p>
   <p *ngIf="data.oppositeBankName"> 收款银行卡银行名称：{{data.oppositeBankName}}</p>
   <p *ngIf="data.oppositeBankNumber"> 收款银行卡号：{{data.oppositeBankNumber}}</p>
-
-
   <p *ngFor="let time of data.tradeTimes; let i = index">
-    交易时间：{{time.format('HH:mm')}}----->{{data.moneys[i]}}元--->流水号：{{data.tradeNumbers[i]}}
+    交易时间：{{time.format('Y-M-D HH:mm')}}----->{{data.moneys[i]}}元--->流水号：{{data.tradeNumbers[i]}}
   </p>
-
-
   <p *ngIf="data.tradeType"> 交易类型：{{data.tradeType}}</p>
   <p *ngIf="data.tradeResult"> 交易结果：{{data.tradeResult}}</p>
   <p *ngIf="data.tradeDesc"> 交易摘要：{{data.tradeDesc}}</p>

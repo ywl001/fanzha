@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Field } from '../models/field';
 import { AccountNode } from '../models/accountNode';
 import { SqlService } from '../service/sql.service';
 import { PhpFunctionName } from '../models/phpFunctionName';

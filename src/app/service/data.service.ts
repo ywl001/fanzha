@@ -7,7 +7,6 @@ import { MessageService } from './message.service';
 import { PhpFunctionName } from '../models/phpFunctionName';
 import * as toastr from 'toastr';
 import { Common } from '../models/common';
-import { Field } from '../models/field';
 
 @Injectable({
   providedIn: 'root'
@@ -100,7 +99,7 @@ export class DataService {
       for (let i = 0; i < res.length; i++) {
         const item = res[i];
         let node: AccountNode;
-        let key = item[Field.isThird] == '1' ? item[Field.oppositeAccount] + item[Field.oppositeBankNumber] : item[Field.oppositeAccount];
+        let key = item['isThird'] == '1' ? item['oppositeAccount'] + item['oppositeBankNumber'] : item['oppositeAccount'];
         if (key) {
           if (nodeMap.has(key)) {
             this.createNode(nodeMap.get(key), item)
@@ -143,7 +142,7 @@ export class DataService {
       node = new AccountNode()
       for (const key in item) {
         if (node.hasOwnProperty(key)) {
-          if(key == Field.queryDuration){
+          if(key == 'queryDuration'){
             node[key] = parseFloat(item[key])
           }
           node[key] = item[key];
@@ -153,10 +152,10 @@ export class DataService {
       this.currentAccount.children.push(node);
       node.parentAccount = this.currentAccount;
     }
-    node.moneys.push(parseFloat(item[Field.money]));
-    node.tradeTimes.push(moment(item[Field.tradeTime]))
-    node.leftMoneys.push(parseFloat(item[Field.leftMoney]))
-    node.tradeNumbers.push(item[Field.tradeNumber])
+    node.moneys.push(parseFloat(item['money']));
+    node.tradeTimes.push(moment(item['tradeTime']))
+    node.leftMoneys.push(parseFloat(item['leftMoney']))
+    node.tradeNumbers.push(item['tradeNumber'])
     return node;
   }
 
