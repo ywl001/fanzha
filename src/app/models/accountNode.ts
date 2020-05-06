@@ -25,6 +25,7 @@ export class AccountNode {
     payeeName = ''
     payeeNumber = ''
     queryDuration:number = 0;
-    tradeBankStationName = '';
-    tradeBandName=''
+    tradeBankStationName:string = '';
+    tradeBandName:string = ''
+
 }

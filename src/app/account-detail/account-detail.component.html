@@ -1,21 +1,26 @@
 <h1 matDialogTitle>交易明细</h1>
 
 <mat-dialog-content>
-  <p *ngIf="data.account">查询账号：{{data.account}}</p>
+    <p *ngIf="data.account">查询账号：{{data.account}}</p>
 
-  <p *ngIf="data.accountBankName">付款银行卡银行名称：{{data.accountBankName}}</p>
-  <p *ngIf="data.accountBankNumber"> 付款银行卡号：{{data.accountBankNumber}}</p>
-  <p *ngIf='data.oppositeName'>对方账号姓名：{{data.oppositeName}}</p>
-  <p *ngIf="data.oppositeAccount"> 对方账号卡号：{{data.oppositeAccount}}</p>
-  <p *ngIf="data.oppositeBankName"> 收款银行卡银行名称：{{data.oppositeBankName}}</p>
-  <p *ngIf="data.oppositeBankNumber"> 收款银行卡号：{{data.oppositeBankNumber}}</p>
-  <p *ngFor="let time of data.tradeTimes; let i = index">
-    交易时间：{{time.format('Y-M-D HH:mm')}}----->{{data.moneys[i]}}元--->流水号：{{data.tradeNumbers[i]}}
-  </p>
-  <p *ngIf="data.tradeType"> 交易类型：{{data.tradeType}}</p>
-  <p *ngIf="data.tradeResult"> 交易结果：{{data.tradeResult}}</p>
-  <p *ngIf="data.tradeDesc"> 交易摘要：{{data.tradeDesc}}</p>
-  <p *ngIf="data.payeeNumber"> 商户名称：{{data.payeeName}}</p>
-  <p *ngIf="data.inOrOut"> 借贷标志：{{data.inOrOut}}</p>
-  <p *ngIf="data.payeeNumber"> 收款方的商户号：{{data.payeeNumber}}</p>
+    <p *ngIf="data.accountBankName">付款银行卡银行名称：{{data.accountBankName}}</p>
+    <p *ngIf="data.accountBankNumber"> 付款银行卡号：{{data.accountBankNumber}}</p>
+    <p *ngIf='data.oppositeName'>对方账号姓名：{{data.oppositeName}}</p>
+    <p *ngIf="data.oppositeAccount"> 对方账号卡号：{{data.oppositeAccount}}</p>
+    <p *ngIf="data.oppositeBankName"> 收款银行卡银行名称：{{data.oppositeBankName}}</p>
+    <p *ngIf="data.oppositeBankNumber"> 收款银行卡号：{{data.oppositeBankNumber}}</p>
+
+
+    <p *ngFor="let time of data.tradeTimes; let i = index">
+        交易时间：{{time.format('HH:mm')}}----->{{data.moneys[i]}}元--->流水号：{{data.tradeNumbers[i]}}
+    </p>
+
+    <p *ngIf="data.tradeType"> 交易类型：{{data.tradeType}}</p>
+    <p *ngIf="data.tradeResult"> 交易结果：{{data.tradeResult}}</p>
+    <p *ngIf="data.tradeDesc"> 交易摘要：{{data.tradeDesc}}</p>
+    <p *ngIf="data.payeeNumber"> 商户名称：{{data.payeeName}}</p>
+    <p *ngIf="data.inOrOut"> 借贷标志：{{data.inOrOut}}</p>
+    <p *ngIf="data.payeeNumber"> 收款方的商户号：{{data.payeeNumber}}</p>
+    <p *ngIf="data.tradeBankStationName"> 交易网点名称：{{data.tradeBankStationName}}</p>
+    <p *ngIf="data.tradeBandName"> 交易开户行：{{data.tradeBandName}}</p>
 </mat-dialog-content>

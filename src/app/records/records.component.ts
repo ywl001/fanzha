@@ -157,6 +157,7 @@ export class RecordsComponent {
   private insertData(records) {
     this.sqlService.exec(PhpFunctionName.INSERT_ARRAY, records).subscribe(
       res => {
+        console.log(res)
         this.fileIndex++;
         toastr.clear()
         toastr.info(`成功导入${records.length}条数据`)
