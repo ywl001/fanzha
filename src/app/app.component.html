@@ -1,32 +1,32 @@
 <div class="root">
-    <div class="leftContainer">
-        <div class="left_top">
-            <button id=btnAddCase mat-raised-button color="primary" (click)=onAddCase()>添加案件</button>
-        </div>
-        <div class="left_middle">
-            <app-records></app-records>
-        </div>
-        <div class="left_bottom">
-            <!-- <mat-form-field style="width:100%;margin: 0;">
-                <mat-label>过滤案件。。。</mat-label>
-                <input matInput>
-            </mat-form-field> -->
-        </div>
+  <div class="leftContainer">
+    <div class="left_top">
+      <button id=btnAddCase mat-raised-button color="primary" (click)=onAddCase()>添加案件</button>
+    </div>
+    <div class="left_middle">
+      <app-records></app-records>
     </div>
 
-    <div class="rightContainer">
-        <div id=chart>
-            <canvas #bgCanvas id="bgCanvas"></canvas>
-            <div #contentDiv id='contentDiv'></div>
-        </div>
+    <!-- <div class="left_bottom">
+      <mat-form-field>
+        <input matInput [value]="filterCase" [formControl]="caseControl">
+      </mat-form-field>
+    </div> -->
+  </div>
+
+  <div class="rightContainer">
+    <div id=chart>
+      <canvas #bgCanvas id="bgCanvas"></canvas>
+      <div #contentDiv id='contentDiv'></div>
     </div>
+  </div>
 
-    <mat-form-field style="width: 80px;position:absolute;right: 30px;top:50px">
-        <mat-label>转账后</mat-label>
-        <input matInput type="number" [(ngModel)]="after">
-    </mat-form-field>
+  <mat-form-field style="width: 80px;position:absolute;right: 30px;top:50px">
+    <mat-label>转账后</mat-label>
+    <input matInput type="number" [(ngModel)]="after">
+  </mat-form-field>
 
-    <button id="btnClear" mat-raised-button color="primary" (click)=onSaveImage()>保存图片</button>
+  <button id="btnClear" mat-raised-button color="primary" (click)=onSaveImage()>保存图片</button>
 
-    <div id="toggleLeft" class="toggleLeft" (click)="onToggleLeft()"></div>
+  <div id="toggleLeft" class="toggleLeft" (click)="onToggleLeft()"></div>
 </div>

@@ -1,6 +1,5 @@
 import { Component, ViewChild, ElementRef, ComponentFactoryResolver, ViewContainerRef, ChangeDetectorRef, Renderer2 } from '@angular/core';
 
-import * as toastr from 'toastr';
 import { MessageService } from './service/message.service';
 import { AccountComponent } from './account/account.component';
 import { MatDialog } from '@angular/material';
@@ -9,7 +8,7 @@ import { AddCaseComponent } from './add-case/add-case.component';
 import * as domtoimage from 'dom-to-image';
 import * as download from 'downloadjs'
 
-import gsap from 'gsap'
+import {TweenMax} from 'gsap'
 import { Common } from './models/common';
 import { AccountNode } from './models/accountNode';
 
@@ -17,6 +16,9 @@ import { AccountNode } from './models/accountNode';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
+  animations: [
+    // animation triggers go here
+  ]
 })
 
 export class AppComponent {
@@ -291,12 +293,12 @@ export class AppComponent {
   }
   set isLeftOpen(value) {
     if (value) {
-      gsap.to(".leftContainer", 0.5, { width: "400px" });
-      gsap.to("#toggleLeft", 0.5, { transform: "rotate(0deg)", left: '405px' });
+      TweenMax.to(".leftContainer", 0.5, { width: "400px" });
+      TweenMax.to("#toggleLeft", 0.5, { transform: "rotate(0deg)", left: '405px' });
 
     } else {
-      gsap.to(".leftContainer", 0.5, { width: "0px" });
-      gsap.to("#toggleLeft", 0.5, { transform: "rotate(180deg)", left: '5px' });
+      TweenMax.to(".leftContainer", 0.5, { width: "0px" });
+      TweenMax.to("#toggleLeft", 0.5, { transform: "rotate(180deg)", left: '5px' });
     }
     this._isLeftOpen = !this._isLeftOpen;
   }

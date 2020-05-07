@@ -1,15 +1,4 @@
 <div #root id="root" [cdkDragFreeDragPosition]="position" cdkDragLockAxis="x" cdkDrag (cdkDragMoved)=onMoving($event) (click)=onClick()>
-<<<<<<< HEAD
-  <p>{{tradeTime}}--{{count}}--{{totalMoney}}元</p>
-  <p>{{data.oppositeAccount}}
-    <span *ngIf="!data.oppositeAccount">{{data.payeeName}}</span>
-    <span *ngIf="!data.oppositeAccount">{{data.tradeBankStationName}}</span>
-  </p>
-  <p>{{data.oppositeName}}<span *ngIf="!data.oppositeAccount">{{data.tradeType}}</span></p>
-  <div class="btnDel" (click)="onDelete();$event.stopPropagation();"></div>
-  <div class="btnConnect" (click)="onConnect();$event.stopPropagation();"></div>
-  <div class="btnDuration" (click)="onSetDuration();$event.stopPropagation();"></div>
-=======
     <p>{{tradeTime}}--{{count}}--{{totalMoney}}元</p>
     <p>{{data.oppositeAccount}}
         <span *ngIf="!data.oppositeAccount">{{data.payeeName}}</span>
@@ -19,5 +8,4 @@
     <div class="btnDel" (click)="onDelete();$event.stopPropagation();"></div>
     <div class="btnConnect" (click)="onConnect();$event.stopPropagation();"></div>
     <div class="btnDuration" (click)="onSetDuration();$event.stopPropagation();"></div>
->>>>>>> 8df0ccb44eaac26e67ce7708ba405f3db57d6645
 </div>
