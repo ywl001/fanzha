@@ -4,18 +4,19 @@
       <button id=btnAddCase mat-raised-button color="primary" (click)=onAddCase()>添加案件</button>
     </div>
     <div class="left_middle">
-      <app-records></app-records>
+      <app-records [data]=filterCase$|async></app-records>
     </div>
 
-    <!-- <div class="left_bottom">
-      <mat-form-field>
-        <input matInput [value]="filterCase" [formControl]="caseControl">
+    <div class="left_bottom">
+      <!-- <mat-checkbox [(ngModel)]="isHasAccount">仅显示有账号的案件</mat-checkbox> -->
+      <mat-form-field style="width: 100%;">
+        <input matInput [value]="filterCase" [formControl]="caseControl" placeholder="过滤。。">
       </mat-form-field>
-    </div> -->
+    </div>
   </div>
 
   <div class="rightContainer">
-    <div id=chart>
+    <div id=chart cdkDrag>
       <canvas #bgCanvas id="bgCanvas"></canvas>
       <div #contentDiv id='contentDiv'></div>
     </div>

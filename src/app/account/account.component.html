@@ -1,11 +1,16 @@
+<!-- 
 <div #root id="root" [cdkDragFreeDragPosition]="position" cdkDragLockAxis="x" cdkDrag (cdkDragMoved)=onMoving($event) (click)=onClick()>
-    <p>{{tradeTime}}--{{count}}--{{totalMoney}}元</p>
-    <p>{{data.oppositeAccount}}
-        <span *ngIf="!data.oppositeAccount">{{data.payeeName}}</span>
-        <span *ngIf="!data.oppositeAccount">{{data.tradeBankStationName}}</span>
-    </p>
-    <p>{{data.oppositeName}}<span *ngIf="!data.oppositeAccount">{{data.tradeType}}</span></p>
-    <div class="btnDel" (click)="onDelete();$event.stopPropagation();"></div>
-    <div class="btnConnect" (click)="onConnect();$event.stopPropagation();"></div>
-    <div class="btnDuration" (click)="onSetDuration();$event.stopPropagation();"></div>
+  <p>{{tradeTime}}--{{count}}--{{totalMoney}}元</p>
+  <p> {{secondLineContent}}</p>
+  <div class="btnDel" (click)="onDelete();$event.stopPropagation();"></div>
+  <div class="btnConnect" (click)="onConnect();$event.stopPropagation();"></div>
+  <div class="btnDuration" (click)="onSetDuration();$event.stopPropagation();"></div>
+</div> -->
+
+<div #root id="root" [style.top.px]="y" [style.left.px]="x" (click)=onClick()>
+  <p>{{tradeTime}}-{{count}}-{{totalMoney}}元</p>
+  <p> {{secondLineContent}}</p>
+  <div class="btnDel" (click)="onDelete();$event.stopPropagation();"></div>
+  <div class="btnConnect" (click)="onConnect();$event.stopPropagation();"></div>
+  <div class="btnDuration" (click)="onSetDuration();$event.stopPropagation();"></div>
 </div>

@@ -3,8 +3,15 @@
   position: absolute;
   background-color:lightseagreen;
   cursor: pointer;
+  font-size: 16px;
+  border:1px solid darkslategrey
 }
-
+p{
+  max-width:200px;
+  line-height: 18px;
+  margin: 5px;
+  padding:1px 5px
+}
 
 .btnDel {
   position: absolute;

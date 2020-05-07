@@ -29,34 +29,35 @@ export class AccountComponent implements OnInit {
   x: number;
   y: number;
 
-  private _position;
-
+  
   level:number;
-
+  
+  
+  
   children: Array<AccountComponent> = [];
   parent:AccountComponent;
-
-
+  
   private _data: AccountNode;
-
+  
   set data(value: AccountNode) {
     this._data = value;
     this.level = value.level;
   }
-
+  
   get data() {
     return this._data;
   }
+  
+  // private _position;
+  // set position(value) {
+  //   this._position = value;
+  //   this.x = value.x;
+  //   this.y = value.y;
+  // }
 
-  set position(value) {
-    this._position = value;
-    this.x = value.x;
-    this.y = value.y;
-  }
-
-  get position() {
-    return this._position;
-  }
+  // get position() {
+  //   return this._position;
+  // }
 
   get totalMoney() {
     let t = 0;
@@ -72,8 +73,33 @@ export class AccountComponent implements OnInit {
 
   get tradeTime() {
     if (this.data.tradeTimes && this.data.tradeTimes.length > 0)
-      return this.data.tradeTimes[0].format('HH:mm');
+      return this.getMinTime(this.data.tradeTimes).format('MM-DD HH:mm');
     return ''
+  }
+
+  private getMinTime(datetimes){
+    let a = datetimes[0];
+    for (let i = 0; i < datetimes.length; i++) {
+      const time = datetimes[i];
+      if(time.isSameOrBefore(a))
+        a = time;
+    }
+    return a;
+  }
+
+  get secondLineContent(){
+    let str = '';
+    if(this.data.oppositeName)
+      str = this.data.oppositeName;
+    else if(this.data.oppositeBankNumber)
+      str = this.data.oppositeBankNumber
+    else if(this.data.oppositeAccount)
+      str = this.data.oppositeAccount;
+    else if(this.data.tradeType)
+      str = this.data.tradeType+'--'+this.data.tradeBankStationName
+    else if(this.data.payeeName)
+      str = this.data.payeeName
+    return str;
   }
 
   ngOnInit() {
@@ -86,30 +112,30 @@ export class AccountComponent implements OnInit {
     this.w = this.rootDiv.nativeElement.clientWidth;
   }
 
-  onMoving(e) {
-    let element = e.source.getRootElement();
-    let boundingClientRect = element.getBoundingClientRect();
-    console.log(boundingClientRect.x)
-    let parentPosition = this.getPosition(element);
-    this.x = boundingClientRect.x - parentPosition.left
-    this.y = boundingClientRect.y - parentPosition.top;
-    console.log(this.x,this.y)
-  }
+  // onMoving(e) {
+  //   let element = e.source.getRootElement();
+  //   let boundingClientRect = element.getBoundingClientRect();
+  //   console.log(boundingClientRect.x)
+  //   let parentPosition = this.getPosition(element);
+  //   this.x = boundingClientRect.x - parentPosition.left
+  //   this.y = boundingClientRect.y - parentPosition.top;
+  //   console.log(this.x,this.y)
+  // }
 
-  getPosition(el) {
-    let x = 0;
-    let y = 0;
-    // offsetLeft:获取当前对象到其上级层左边的距离.
-    // scrollLeft:设置或获取位于对象左边界和窗口中目前可见内容的最左端之间的距离
-    // HTMLElement.offsetParent 是一个只读属性，返回一个指向最近的（指包含层级上的最近）包含该元素的定位元素或者最近的 table,td,th,body元素
-    while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
-      x += el.offsetLeft - el.scrollLeft;
-      console.log('el.offsetleft' + el.offsetLeft + 'el.scrollerLeft' + el.scrollerLeft)
-      y += el.offsetTop - el.scrollTop;
-      el = el.offsetParent;
-    }
-    return { top: y, left: x };
-  }
+  // getPosition(el) {
+  //   let x = 0;
+  //   let y = 0;
+  //   // offsetLeft:获取当前对象到其上级层左边的距离.
+  //   // scrollLeft:设置或获取位于对象左边界和窗口中目前可见内容的最左端之间的距离
+  //   // HTMLElement.offsetParent 是一个只读属性，返回一个指向最近的（指包含层级上的最近）包含该元素的定位元素或者最近的 table,td,th,body元素
+  //   while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+  //     x += el.offsetLeft - el.scrollLeft;
+  //     console.log('el.offsetleft' + el.offsetLeft + 'el.scrollerLeft' + el.scrollerLeft)
+  //     y += el.offsetTop - el.scrollTop;
+  //     el = el.offsetParent;
+  //   }
+  //   return { top: y, left: x };
+  // }
 
   onDelete() {
     alertify.set({

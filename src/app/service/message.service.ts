@@ -38,5 +38,6 @@ export class MessageService {
   sendCaseName(value){
     this.caseName.next(value)
   }
+
  
 }

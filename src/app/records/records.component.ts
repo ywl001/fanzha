@@ -19,7 +19,7 @@ declare var alertify;
 })
 export class RecordsComponent {
 
-  private allRecords: Array<any>;
+  // private allRecords: Array<any>;
 
   /**
    * 案件列表
@@ -54,8 +54,6 @@ export class RecordsComponent {
     //获取excel和数据库的映射关系
     this.http.get('assets/field.json').subscribe(res => { this.field = res })
     //获取案件及查询账号信息
-    this.getData();
-    this.message.refresh$.subscribe(res => { this.getData() })
     this.message.refreshChart$.subscribe(
       res => {
         if (this.currentItem) {
@@ -65,27 +63,32 @@ export class RecordsComponent {
     )
   }
 
-  private getData() {
-    this.sqlService.exec(PhpFunctionName.SELECT_CASE_ACCOUNT, null).subscribe(
-      res => {
-        this.allRecords = res;
-        let c = new Map();
-        this.caseList = [];
-        for (let i = 0; i < res.length; i++) {
-          let o = res[i];
-          c.set(o.caseID, o)
-        }
-        c.forEach((value) => {
-          this.caseList.push(value)
-        })
+  private _data;
+  @Input() 
+  set data(res){
+    if(this._data != res){
+      this._data = res;
+      let c = new Map();
+      this.caseList = [];
+      for (let i = 0; i < res.length; i++) {
+        let o = res[i];
+        c.set(o.caseID, o)
       }
-    )
+      c.forEach((value) => {
+        this.caseList.push(value)
+      })
+    }
   }
+
+ get data(){
+    return this._data;
+  }
+
 
   onOpenPanel(lawCase) {
     this.caseID = lawCase.caseID;
     this.message.sendCaseName(lawCase.caseName)
-    this.itemList = this.allRecords.filter(item => item.caseID == lawCase.caseID && item.accountID)
+    this.itemList = this.data.filter(item => item.caseID == lawCase.caseID && item.accountID)
   }
 
   onAddAccount(lawCase) {
@@ -114,7 +117,7 @@ export class RecordsComponent {
           tableName: 'start_account',
           id: item.accountID
         }
-        this.sqlService.exec(PhpFunctionName.DEL, data).subscribe(res => this.getData())
+        this.sqlService.exec(PhpFunctionName.DEL, data).subscribe(res=>this.message.sendRefresh())
       }
     });
   }

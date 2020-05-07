@@ -8,9 +8,16 @@ import { AddCaseComponent } from './add-case/add-case.component';
 import * as domtoimage from 'dom-to-image';
 import * as download from 'downloadjs'
 
-import {TweenMax} from 'gsap'
 import { Common } from './models/common';
 import { AccountNode } from './models/accountNode';
+import { SqlService } from './service/sql.service';
+import { PhpFunctionName } from './models/phpFunctionName';
+import { Observable,of } from 'rxjs';
+import { FormControl } from '@angular/forms';
+import { startWith } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+
+import anime from 'animejs/lib/anime.es.js';
 
 @Component({
   selector: 'app-root',
@@ -44,14 +51,24 @@ export class AppComponent {
   @ViewChild('contentDiv', { static: false, read: ViewContainerRef }) contentDiv: ViewContainerRef;
   @ViewChild('bgCanvas', { static: false }) bgCanvas: ElementRef;
 
+
+  filterCase:string = ''
+  filterCase$: Observable<any>;
+  caseControl = new FormControl();
+  private _lawcases;
+
+
   constructor(public dialog: MatDialog,
     private messageService: MessageService,
+    private sqlService:SqlService,
     private resolver: ComponentFactoryResolver,
-    private cdf: ChangeDetectorRef) { }
+    private cdf: ChangeDetectorRef) {
+    }
 
 
   ngOnInit() {
     console.log('app init')
+    this.getData()
     this.messageService.accountNode$.subscribe(
       nodes => { this.showNodes(nodes) }
     )
@@ -59,6 +76,37 @@ export class AppComponent {
     this.messageService.caseName$.subscribe(
       res => { this.currentCase = res }
     )
+
+    this.messageService.refresh$.subscribe(
+      res=>{this.getData()}
+    )
+  }
+
+  private getData() {
+    this.sqlService.exec(PhpFunctionName.SELECT_CASE_ACCOUNT, null).subscribe(
+      res => {
+        this.lawCase = res;
+      }
+    )
+  }
+
+  set lawCase(value){
+    this._lawcases = value;
+    this.filterCase$ = this.caseControl.valueChanges.pipe(
+      startWith(''),
+      map(val => this.filter(val))
+    )
+  }
+
+  private filter(val: string): string[] {
+    if(val=='') return this._lawcases;
+    return this._lawcases.filter(item => {
+      return item['caseName'].indexOf(val) >= 0
+    })
+  }
+
+  get lawCase(){
+    return this._lawcases;
   }
 
   onAddCase() {
@@ -134,7 +182,7 @@ export class AppComponent {
 
     if (this.isLayout) {
       this.firstLayout();
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 10; i++) {
         this.layout(this.items)
       }
       this.isLayout = false;
@@ -184,7 +232,9 @@ export class AppComponent {
       arr.forEach((item) => {
         let x = preWidth;
         let y = this.getYByLevel(level);
-        item.position = { x: x, y: y }
+        // item.position = { x: x, y: y }
+        item.x = x;
+        item.y = y;
         preWidth += (item.w + this.gap_w);
       })
     })
@@ -222,13 +272,15 @@ export class AppComponent {
   private moveItem(item, dx) {
     let items_level = this.itemMap.get(item.data.level);
     // item设置位置
-    item.position = { x: item.x + dx, y: item.y };
+    // item.position = { x: item.x + dx, y: item.y };
+    item.x = item.x+dx;
     //item后面的元素跟随移动
     let acc_index = items_level.indexOf(item);
     let prevItem = item;
     for (let i = acc_index + 1; i < items_level.length; i++) {
       const element = items_level[i];
-      element.position = { x: prevItem.x + prevItem.w + this.gap_w, y: element.y };
+      // element.position = { x: prevItem.x + prevItem.w + this.gap_w, y: element.y };
+      element.x = prevItem.x+prevItem.w+this.gap_w;
       prevItem = element;
       console.log('跟随移动了' + dx)
     }
@@ -293,12 +345,36 @@ export class AppComponent {
   }
   set isLeftOpen(value) {
     if (value) {
-      TweenMax.to(".leftContainer", 0.5, { width: "400px" });
-      TweenMax.to("#toggleLeft", 0.5, { transform: "rotate(0deg)", left: '405px' });
+      anime({
+        targets: '.leftContainer',
+        width: 400,
+        duration: 500,
+        easing: 'linear'
+      });
+      anime({
+        targets: '#toggleLeft',
+        left: 405,
+        duration: 500,
+        rotate:0,
+        easing: 'linear'
+      })
+      // gsap.to(".leftContainer", 0.5, { width: "400px" });
+      // gsap.to("#toggleLeft", 0.5, { transform: "rotate(0deg)", left: '405px' });
 
     } else {
-      TweenMax.to(".leftContainer", 0.5, { width: "0px" });
-      TweenMax.to("#toggleLeft", 0.5, { transform: "rotate(180deg)", left: '5px' });
+      anime({
+        targets: '.leftContainer',
+        width:0,
+        duration: 500
+      });
+      anime({
+        targets: '#toggleLeft',
+        left:5,
+        rotate:180,
+        duration: 500
+      });
+      // gsap.to(".leftContainer", 0.5, { width: "0px" });
+      // gsap.to("#toggleLeft", 0.5, { transform: "rotate(180deg)", left: '5px' });
     }
     this._isLeftOpen = !this._isLeftOpen;
   }
@@ -310,6 +386,4 @@ export class AppComponent {
         download(dataUrl, `${this.currentCase}.jpg`);
       });
   }
-
-
 }
