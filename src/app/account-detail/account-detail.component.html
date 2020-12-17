@@ -12,7 +12,7 @@
 
 
     <p *ngFor="let time of data.tradeTimes; let i = index">
-        交易时间：{{time.format('HH:mm')}}----->{{data.moneys[i]}}元--->流水号：{{data.tradeNumbers[i]}}
+        交易时间：{{time.format('MM-DD HH:mm')}}----->{{data.moneys[i]}}元--->流水号：{{data.tradeNumbers[i]}}
     </p>
 
     <p *ngIf="data.tradeType"> 交易类型：{{data.tradeType}}</p>
@@ -23,4 +23,5 @@
     <p *ngIf="data.payeeNumber"> 收款方的商户号：{{data.payeeNumber}}</p>
     <p *ngIf="data.tradeBankStationName"> 交易网点名称：{{data.tradeBankStationName}}</p>
     <p *ngIf="data.tradeBandName"> 交易开户行：{{data.tradeBandName}}</p>
+    <p *ngIf="data.remark"> 备注：{{data.remark}}</p>
 </mat-dialog-content>

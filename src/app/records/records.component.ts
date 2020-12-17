@@ -129,6 +129,7 @@ export class RecordsComponent {
   private fileIndex = 0;
   private files;
   onFileChange(event) {
+    //清除对同一文件不触发change
     this.files = event.target.files;
     this.insertExcel()
   }
@@ -146,6 +147,10 @@ export class RecordsComponent {
     this.excelService.importExcel(file).subscribe(
       res => {
         let datas = [];
+        // if(!this.validateTime(res[0])){
+        //   toastr.warning('交易时间格式不对，请修改交易时间')
+        //   return ;
+        // }
         let isThird = this.isThird(res[0])
         console.log('is third')
         for (let i = 0; i < res.length; i++) {
@@ -162,9 +167,14 @@ export class RecordsComponent {
       res => {
         console.log(res)
         this.fileIndex++;
-        toastr.clear()
-        toastr.info(`成功导入${records.length}条数据`)
-        this.insertExcel()
+        if(this.fileIndex < this.files.length){
+          toastr.clear()
+          toastr.info(`成功导入${records.length}条数据`)
+          this.insertExcel()
+        }else{
+          toastr.info(`数据上传完毕`);
+          this.message.sendRefreshChart()
+        }
       }
     )
   }
@@ -180,6 +190,7 @@ export class RecordsComponent {
         o[newkey] = value;
       }
     }
+    //加上案件id
     o['caseID'] = this.caseID
     return o;
   }
@@ -217,5 +228,11 @@ export class RecordsComponent {
     if (record.hasOwnProperty('付款支付帐号'))
       return true;
     return false;
+  }
+
+  private validateTime(record){
+    if(record.tradeTime && record.tradeTime.length != 14)
+      return false;
+    return true;
   }
 }

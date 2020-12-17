@@ -69,6 +69,15 @@
     width: 80px;
 }
 
+
+#btnLayout {
+    position: absolute;
+    right: 130px;
+    top: 5px;
+    width: 80px;
+}
+
+
 #toggleLeft {
     position: absolute;
     width: 25px;

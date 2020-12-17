@@ -11,8 +11,8 @@ import {
   MatDialogModule,
   MatExpansionModule,
   MatDatepickerModule,
-  MatCheckboxModule
-
+  MatCheckboxModule,
+  MatTooltipModule
 } from '@angular/material';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import {
@@ -26,9 +26,9 @@ import { AccountComponent } from './account/account.component';
 import { AddCaseComponent } from './add-case/add-case.component'
 import { RecordsComponent } from './records/records.component';
 import { AddAccountComponent } from './add-account/add-account.component';
-import { AddLowerComponent } from './add-lower/add-lower.component';
 import { AccountDetailComponent } from './account-detail/account-detail.component';
-import { SetDurationComponent } from './set-duration/set-duration.component';
+import { ChartComponent } from './chart/chart.component';
+import { AddValueComponent } from './add-value/add-value.component';
 
 @NgModule({
   declarations: [
@@ -37,9 +37,9 @@ import { SetDurationComponent } from './set-duration/set-duration.component';
     AddCaseComponent,
     RecordsComponent,
     AddAccountComponent,
-    AddLowerComponent,
     AccountDetailComponent,
-    SetDurationComponent,
+    ChartComponent,
+    AddValueComponent,
   ],
   imports: [
     BrowserModule,
@@ -52,6 +52,7 @@ import { SetDurationComponent } from './set-duration/set-duration.component';
     MatExpansionModule,
     MatDatepickerModule,
     MatCheckboxModule,
+    MatTooltipModule,
     DragDropModule,
     HttpClientModule,
     FormsModule,
@@ -62,6 +63,11 @@ import { SetDurationComponent } from './set-duration/set-duration.component';
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [AccountComponent, AddCaseComponent, AddAccountComponent,AddLowerComponent,AccountDetailComponent,SetDurationComponent]
+  entryComponents: [
+    AccountComponent, 
+    AddCaseComponent, 
+    AddAccountComponent,
+    AddValueComponent,
+    AccountDetailComponent]
 })
 export class AppModule { }

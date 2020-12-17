@@ -1,12 +1,11 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { AccountNode } from '../models/accountNode';
 import { SqlService } from '../service/sql.service';
 import { MessageService } from '../service/message.service';
 import { PhpFunctionName } from '../models/phpFunctionName';
 import { MatDialog } from '@angular/material';
-import { AddLowerComponent } from '../add-lower/add-lower.component';
 import { AccountDetailComponent } from '../account-detail/account-detail.component';
-import { SetDurationComponent } from '../set-duration/set-duration.component';
+import { AddValueComponent } from '../add-value/add-value.component';
 
 declare var alertify;
 
@@ -36,9 +35,12 @@ export class AccountComponent implements OnInit {
   
   children: Array<AccountComponent> = [];
   parent:AccountComponent;
+
+
   
   private _data: AccountNode;
   
+  @Input()
   set data(value: AccountNode) {
     this._data = value;
     this.level = value.level;
@@ -73,7 +75,7 @@ export class AccountComponent implements OnInit {
 
   get tradeTime() {
     if (this.data.tradeTimes && this.data.tradeTimes.length > 0)
-      return this.getMinTime(this.data.tradeTimes).format('MM-DD HH:mm');
+      return this.getMinTime(this.data.tradeTimes).format('HH:mm');
     return ''
   }
 
@@ -85,6 +87,14 @@ export class AccountComponent implements OnInit {
         a = time;
     }
     return a;
+  }
+
+  get bgColor(){
+    if(this.data.isLowerAccount)
+      return 'lightBlue'
+    if(this.data.remark)
+      return 'lightPink'
+    return 'lightseagreen'
   }
 
   get secondLineContent(){
@@ -164,17 +174,19 @@ export class AccountComponent implements OnInit {
     });
   }
 
-  onConnect(){
-    let dialogRef = this.dialog.open(AddLowerComponent, { disableClose: true });
-    dialogRef.componentInstance.data = this.data;
-  }
+ 
   onClick(){
     let dialogRef = this.dialog.open(AccountDetailComponent);
     dialogRef.componentInstance.data = this.data;
   }
 
-  onSetDuration(){
-    let dialogRef = this.dialog.open(SetDurationComponent);
-    dialogRef.componentInstance.data = this.data;
+  onSetValue(e){
+    console.log(e)
+    let dialogRef = this.dialog.open(AddValueComponent, { disableClose: true });
+    let data ={
+      data:this.data,
+      field:e,
+    }
+    dialogRef.componentInstance.data = data;
   }
 }

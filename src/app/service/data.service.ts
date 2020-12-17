@@ -39,6 +39,7 @@ export class DataService {
     this.caseID = parseInt(value.caseID);
     this.startAccount.accountName = value.accountName;
     this.startAccount.oppositeAccount = value.account;
+    this.startAccount.caseID = value.caseID;
     this.startAccount.tradeTimes.push(moment(value.tradeTime));
     this.startAccount.moneys.push(parseFloat(value.money))
 
@@ -47,51 +48,65 @@ export class DataService {
     this.times = 0;
   }
 
-  private getMinTime(datetimes){
-    let a = datetimes[0];
-    for (let i = 0; i < datetimes.length; i++) {
-      const time = datetimes[i];
-      if(time.isSameOrBefore(a))
-        a = time;
-    }
-    return a;
-  }
 
   private currentAccount: AccountNode;
 
   private queryNodeByAccount(node: AccountNode) {
     this.currentAccount = node;
-    let startMoment = this.getMinTime(node.tradeTimes)
-    let startTime = startMoment.format('YYYY-MM-DD HH:mm:ss');
-    let endTime;
-    if(node.queryDuration && node.queryDuration > 0){
-      endTime = startMoment.clone().add(node.queryDuration,'h').format('YYYY-MM-DD HH:mm:ss');
-    }else{
-      endTime = startMoment.clone().add(Common.AFTER_TIME,'h').format('YYYY-MM-DD HH:mm:ss');
-    }
-    let data = {
-      startTime: startTime,
-      endTime: endTime,
-      caseID: this.caseID
-    }
-    console.log(data.startTime,data.endTime)
-    if (node.isThird && node.isThird == '1') {
-      if (node.oppositeAccount || node.oppositeBankNumber)
-        data['account'] = node.oppositeBankNumber ? node.oppositeBankNumber : node.oppositeAccount
-    } else {
-      data['account'] = node.oppositeAccount
-    }
+    //查询时间
+    let time = this.getQueryTime(node)
+    //查询账号,对于第三方，如果对端银行卡存在，说明钱进入银行卡了，直接查询银行卡，否则查账号
+    let account = this.getQueryAccount(node)
 
-    if (!data['account']) {
+    if (!account || account == 'null') {
+      //对于账号不存在的清空下，直接查下一个
       this.nextAccount()
     } else {
-      console.time('query')
+      let data = {
+        startTime: time.start,
+        endTime: time.end,
+        caseID: this.caseID,
+        account: account
+      }
       this.sqlService.exec(PhpFunctionName.SELECT_ACCOUNT_OUT_RECROD, data).subscribe(
         res => { this.processData(res) }
       )
     }
   }
 
+  /**获得查询时间 */
+  getQueryTime(node) {
+    let startMoment = this.getMinTime(node.tradeTimes)
+    let startTime = startMoment.format('YYYY-MM-DD HH:mm:ss');
+    let endTime_select = startMoment.clone().add(node.queryDuration, 'h').format('YYYY-MM-DD HH:mm:ss');
+    let endTime_normal = startMoment.clone().add(Common.AFTER_TIME, 'h').format('YYYY-MM-DD HH:mm:ss');
+    let endTime = (node.queryDuration && node.queryDuration > 0) ? endTime_select : endTime_normal;
+    return{start:startTime,end:endTime}
+  }
+
+  private getMinTime(datetimes) {
+    let a = datetimes[0];
+    for (let i = 0; i < datetimes.length; i++) {
+      const time = datetimes[i];
+      if (time.isSameOrBefore(a))
+        a = time;
+    }
+    return a;
+  }
+
+  /**获得查询的账号 */
+  private getQueryAccount(node: AccountNode) {
+    let account;
+    if (node.isThird && node.isThird == '1') {
+      if (node.oppositeAccount || node.oppositeBankNumber)
+        account = node.oppositeBankNumber ? node.oppositeBankNumber : node.oppositeAccount
+    } else {
+      account = node.oppositeAccount
+    }
+    return account;
+  }
+
+  /**解析查询数据 */
   private processData(res) {
     console.timeEnd('query')
     if (res && res.length > 0) {
@@ -102,7 +117,8 @@ export class DataService {
         let key = item['isThird'] == '1' ? item['oppositeAccount'] + item['oppositeBankNumber'] : item['oppositeAccount'];
         if (key) {
           if (nodeMap.has(key)) {
-            this.createNode(nodeMap.get(key), item)
+            node = nodeMap.get(key)
+            this.createNode(node, item)
           } else {
             node = this.createNode(null, item);
             nodeMap.set(key, node);
@@ -110,9 +126,9 @@ export class DataService {
           }
         } else {
           //空账号
-          if(item.payeeName == '手续费' || Math.abs(parseFloat(item.money)) < 100)
+          if (item.payeeName == '手续费' || Math.abs(parseFloat(item.money)) < 100)
             continue;
-          else{
+          else {
             node = this.createNode(null, item);
             this.nodes.push(node)
           }
@@ -129,6 +145,8 @@ export class DataService {
           lowerNode.parentAccount = node;
           lowerNode.id = item.id;
           lowerNode.queryDuration = item.queryDuration;
+          lowerNode.isLowerAccount = true;
+          lowerNode.lowerAccount = item.lowerAccount;
           node.children.push(lowerNode);
           this.waitCheckAccounts.push(lowerNode)
         }
@@ -142,7 +160,7 @@ export class DataService {
       node = new AccountNode()
       for (const key in item) {
         if (node.hasOwnProperty(key)) {
-          if(key == 'queryDuration'){
+          if (key == 'queryDuration') {
             node[key] = parseFloat(item[key])
           }
           node[key] = item[key];
@@ -160,15 +178,14 @@ export class DataService {
   }
 
   private nextAccount() {
-    toastr.clear();
     toastr.info(`查询了账号:${this.currentAccount.oppositeAccount}`)
+    toastr.clear();
     this.nodes.push(this.waitCheckAccounts.shift())
     if (this.waitCheckAccounts.length > 0) {
       this.times++;
       this.queryNodeByAccount(this.waitCheckAccounts[0])
     } else {
       this.message.sendAccountNode(this.nodes);
-      this.message.sendCloseLeft()
     }
   }
 }

@@ -1,5 +1,6 @@
 {
   "查询账号": "account",
+  "付款支付帐号": "account",
   "对方账号姓名": "oppositeName",
   "对方账号卡号": "oppositeAccount",
   "金额": "money",
@@ -9,9 +10,10 @@
   "交易结果": "tradeResult",
   "交易时间": "tradeTime",
   "交易流水号": "tradeNumber",
+  "交易开户行":"tradeBandName",
+  "交易网点名称":"tradeBankStationName",
   "交易摘要": "tradeDesc",
   "商户名称": "payeeName",
-  "付款支付帐号": "account",
   "付款银行卡银行名称": "accountBankName",
   "付款银行卡号": "accountBankNumber",
   "交易金额": "money",
@@ -21,7 +23,5 @@
   "收款银行卡号": "oppositeBankNumber",
   "交易主体的出入账标识": "inOrOut",
   "收款方的商户名称": "payeeName",
-  "收款方的商户号": "payeeNumber",
-  "交易网点名称":"tradeBankStationName",
-  "交易开户行":"tradeBandName"
+  "收款方的商户号": "payeeNumber"
 }

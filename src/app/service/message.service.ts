@@ -5,22 +5,26 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class MessageService {
-  private refresh = new BehaviorSubject('');
+  private refreshCaseList = new BehaviorSubject('');
   private accountNode = new BehaviorSubject(null);
   private closeLeft = new BehaviorSubject('');
   private caseName = new BehaviorSubject('')
-  private refreshChart = new BehaviorSubject('')
+  private refreshChart = new BehaviorSubject('');
+  private saveImage = new BehaviorSubject('');
+  private layout = new BehaviorSubject(false);
   
-  refresh$ = this.refresh.asObservable();
+  refreshCaseList$ = this.refreshCaseList.asObservable();
   accountNode$ = this.accountNode.asObservable();
   closeLeft$ = this.closeLeft.asObservable();
   caseName$ = this.caseName.asObservable();
   refreshChart$ = this.refreshChart.asObservable();
+  saveImage$ = this.saveImage.asObservable();
+  layout$ = this.layout.asObservable();
   
   constructor() { }
 
   sendRefresh(){
-    this.refresh.next('')
+    this.refreshCaseList.next('')
   }
 
   sendRefreshChart(){
@@ -37,6 +41,14 @@ export class MessageService {
 
   sendCaseName(value){
     this.caseName.next(value)
+  }
+
+  sendSaveImage(){
+    this.saveImage.next('')
+  }
+
+  sendLayout(value){
+    this.layout.next(value)
   }
 
  

@@ -1,0 +1,11 @@
+#root{
+    position: relative;
+}
+
+#chartDiv {
+    position: absolute;
+}
+
+#bgCanvas {
+    position: absolute;
+}

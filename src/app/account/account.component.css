@@ -63,3 +63,20 @@ p{
   background-image: url('../../assets/duration_over.png');
   opacity: 1;
 }
+
+.btnRemark {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background-image: url('../../assets/remark.png');
+  background-size: 100% auto; 
+  cursor: pointer;
+  top:8px;
+  right: 95px;
+  opacity: 0.2;
+}
+
+.btnRemark:hover{
+  background-image: url('../../assets/remark_over.png');
+  opacity: 1;
+}

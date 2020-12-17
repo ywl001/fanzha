@@ -27,5 +27,8 @@ export class AccountNode {
     queryDuration:number = 0;
     tradeBankStationName:string = '';
     tradeBandName:string = ''
+    lowerAccount:string='';
+    remark:string=''
+    isLowerAccount:boolean = false;
 
 }
