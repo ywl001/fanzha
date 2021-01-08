@@ -123,5 +123,10 @@
       }
     }
   },
-  "defaultProject": "fanzha"
+  "defaultProject": "fanzha",
+  "schematics": {
+    "@schematics/angular:component": {
+      "style": "scss"
+    }
+  }
 }

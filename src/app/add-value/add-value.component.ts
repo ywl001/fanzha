@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SqlService } from '../service/sql.service';
 import { MessageService } from '../service/message.service';
 import { PhpFunctionName } from '../models/phpFunctionName';
+import { AccountNode } from '../models/accountNode';
 
 @Component({
   selector: 'app-add-value',
@@ -10,49 +11,63 @@ import { PhpFunctionName } from '../models/phpFunctionName';
 })
 export class AddValueComponent {
 
-
   title: string;
   lable: string;
-  value: string;
+
+  /**input的值 */
+  value: string | number;
+
+  /**input 的类型*/
   type: string = 'text'
 
-  private tableData: any;
+  // private tableData: any;
   private id;
   private field: string;
+  private tableName:string;
+  private isFirstNode:boolean;
 
   constructor(private sqlservice: SqlService, private message: MessageService) { }
 
   set data(value) {
-
-    this.id = value.data.id;
+    console.log(value)
+    let node:AccountNode = value.data;
+    this.id = node.id;
     this.field = value.field;
+    this.isFirstNode = node.isFirstNode;
+    this.tableName = node.isFirstNode ? 'start_account' : 'trade_record'
+
+    //设定组件界面的值
     if (this.field == 'lowerAccount') {
       this.title = '手动增加下级节点';
       this.lable = '下级节点';
-      this.value = value.data.lowerAccount;
+      this.value = node.lowerAccount;
     } else if (this.field == 'queryDuration') {
       this.title = '改变查询时长';
       this.lable = '查询时长';
       this.type = 'number';
-      this.value = value.data.queryDuration;
+      this.value = node.queryDuration;
     } else if (this.field == 'remark') {
       this.title = '添加节点备注';
       this.lable = '备注';
-      this.value = value.data.remark
+      this.value = node.remark
     }
   }
 
   onSubmit() {
-    this.tableData = {}
-    this.tableData[this.field] = this.value
-    console.log(this.tableData)
+    let tableData = {}
+    tableData[this.field] = this.value
+    
     let data = {
-      tableName: 'trade_record',
-      tableData: this.tableData,
+      tableName: this.tableName,
+      tableData: tableData,
       id: this.id
     }
     this.sqlservice.exec(PhpFunctionName.UPDATE, data).subscribe(res => {
-      this.message.sendRefreshChart()
+      if(this.isFirstNode){
+        this.message.queryDurationChange(this.value)
+      }else{
+        this.message.sendRefreshChart()
+      }
     })
   }
 

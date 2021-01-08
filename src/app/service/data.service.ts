@@ -13,9 +13,9 @@ import { Common } from '../models/common';
 })
 export class DataService {
 
-  private startAccount: AccountNode;
-  private startTime: string;
-  private endTime: string;
+  // private startAccount: AccountNode;
+  // private startTime: string;
+  // private endTime: string;
   private caseID: number;
 
   private times: number;
@@ -24,32 +24,24 @@ export class DataService {
   waitCheckAccounts: Array<any> = [];
 
   node$: Observable<Array<AccountNode>>;
+  private currentAccount: AccountNode;
 
   constructor(private sqlService: SqlService, private message: MessageService) { }
 
-  set data(value) {
+  set data(value:AccountNode) {
+    console.log(value)
     this.times = 0;
 
     this.nodes = [];
-    this.startTime = moment(value.tradeTime).format('YYYYMMDDHHmmss')
-    console.log(this.startTime)
-    this.endTime = moment(value.tradeTime).add(Common.AFTER_TIME, 'h').format('YYYYMMDDHHmmss');
-    console.log(this.endTime)
-    this.startAccount = new AccountNode()
-    this.caseID = parseInt(value.caseID);
-    this.startAccount.accountName = value.accountName;
-    this.startAccount.oppositeAccount = value.account;
-    this.startAccount.caseID = value.caseID;
-    this.startAccount.tradeTimes.push(moment(value.tradeTime));
-    this.startAccount.moneys.push(parseFloat(value.money))
-
-    this.waitCheckAccounts.push(this.startAccount);
-    this.queryNodeByAccount(this.startAccount)
+    // this.startTime = moment(value.trade).format('YYYYMMDDHHmmss')
+    // console.log(this.startTime)
+    // if(value.queryDuration)
+    // this.endTime = moment(value.tradeTime).add(Common.AFTER_TIME, 'h').format('YYYYMMDDHHmmss');
+    // console.log(this.endTime)
+    this.waitCheckAccounts.push(value);
+    this.queryNodeByAccount(value)
     this.times = 0;
   }
-
-
-  private currentAccount: AccountNode;
 
   private queryNodeByAccount(node: AccountNode) {
     this.currentAccount = node;
@@ -76,9 +68,12 @@ export class DataService {
 
   /**获得查询时间 */
   getQueryTime(node) {
+    console.log(node)
     let startMoment = this.getMinTime(node.tradeTimes)
     let startTime = startMoment.format('YYYY-MM-DD HH:mm:ss');
+    //设置查询时长的结束时间
     let endTime_select = startMoment.clone().add(node.queryDuration, 'h').format('YYYY-MM-DD HH:mm:ss');
+    //正常的公共查询时间
     let endTime_normal = startMoment.clone().add(Common.AFTER_TIME, 'h').format('YYYY-MM-DD HH:mm:ss');
     let endTime = (node.queryDuration && node.queryDuration > 0) ? endTime_select : endTime_normal;
     return{start:startTime,end:endTime}
@@ -108,7 +103,7 @@ export class DataService {
 
   /**解析查询数据 */
   private processData(res) {
-    console.timeEnd('query')
+    // console.timeEnd('query')
     if (res && res.length > 0) {
       let nodeMap = new Map()
       for (let i = 0; i < res.length; i++) {

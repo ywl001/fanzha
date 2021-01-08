@@ -1,0 +1,74 @@
+#root {
+  width: fit-content;
+  position: absolute;
+  background-color: lightseagreen;
+  cursor: pointer;
+  font-size: 16px;
+  border: 1px solid darkslategrey;
+
+  .text-container {
+    display: flex;
+    flex-direction: column;
+
+    p {
+      max-width: 200px;
+      line-height: 18px;
+      margin: 5px;
+      padding: 1px 5px
+    }
+  }
+
+  .btn-container {
+    position:absolute;
+    top:5px;
+    right: 5px;
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-end;
+    .btn {
+      width: 24px;
+      height: 24px;
+      background-size: 100% auto;
+      cursor: pointer;
+      opacity: 0.1;
+      &:hover{
+        opacity: 1;
+      }
+    }
+
+    .btnDel {
+      background-image: url('../../assets/delete.png');
+      &:hover {
+        background-image: url('../../assets/delete_over.png');
+      }
+    }
+
+    .btnConnect {
+      background-image: url('../../assets/connect.png');
+
+      &:hover {
+        background-image: url('../../assets/connect_over.png');
+      }
+    }
+
+    .btnDuration {
+      background-image: url('../../assets/duration.png');
+
+      &:hover {
+        background-image: url('../../assets/duration_over.png');
+      }
+    }
+
+    .btnRemark {
+      background-image: url('../../assets/remark.png');
+
+      &:hover {
+        background-image: url('../../assets/remark_over.png');
+      }
+    }
+  }
+
+
+
+}

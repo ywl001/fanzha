@@ -13,7 +13,7 @@
     </div>
 
     <div class="item" *ngFor="let item of itemList" (click)="onItemClick(item);$event.stopPropagation();">
-      <span class='account'> {{item.account}} </span>
+      <span class='account'> {{item.oppositeAccount}} </span>
       <div class="btnDel" (click)="onDelete(item);$event.stopPropagation();"></div>
     </div>
   </mat-expansion-panel>

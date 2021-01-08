@@ -10,7 +10,7 @@
   "交易结果": "tradeResult",
   "交易时间": "tradeTime",
   "交易流水号": "tradeNumber",
-  "交易开户行":"tradeBandName",
+  "交易开户行":"tradeBankName",
   "交易网点名称":"tradeBankStationName",
   "交易摘要": "tradeDesc",
   "商户名称": "payeeName",

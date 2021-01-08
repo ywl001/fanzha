@@ -5,10 +5,12 @@ import { MatDialog } from '@angular/material';
 import { AddCaseComponent } from '../add-case/add-case.component';
 import { AddAccountComponent } from '../add-account/add-account.component';
 import * as toastr from 'toastr';
+import * as moment from 'moment';
 import { ExcelService } from '../service/excel.service';
 import { HttpClient } from '@angular/common/http';
 import { DataService } from '../service/data.service';
 import { PhpFunctionName } from '../models/phpFunctionName';
+import { AccountNode } from '../models/accountNode';
 declare var alertify;
 
 
@@ -27,7 +29,7 @@ export class RecordsComponent {
   caseList;
 
   /**起始账号列表 */
-  itemList: Array<any>;
+  itemList: Array<AccountNode>;
 
   /**excel和数据库的对照字段 */
   private field: any;
@@ -36,7 +38,7 @@ export class RecordsComponent {
   private caseID: any;
 
   /**当前显示的流程图的账号，当流程数据修改时，刷新视图使用 */
-  private currentItem: any;
+  private currentItem: AccountNode;
 
   /**html中input的引用 */
   @ViewChild('inputFile', { static: false }) inputFile: ElementRef;
@@ -61,12 +63,21 @@ export class RecordsComponent {
         }
       }
     )
+
+    this.message.queryDuration$.subscribe(
+      res => {
+        if (this.currentItem){
+          this.currentItem.queryDuration = res;
+          this.message.sendRefreshChart()
+        }
+      }
+    )
   }
 
   private _data;
-  @Input() 
-  set data(res){
-    if(this._data != res){
+  @Input()
+  set data(res) {
+    if (this._data != res) {
       this._data = res;
       let c = new Map();
       this.caseList = [];
@@ -80,15 +91,29 @@ export class RecordsComponent {
     }
   }
 
- get data(){
+  get data() {
     return this._data;
   }
-
 
   onOpenPanel(lawCase) {
     this.caseID = lawCase.caseID;
     this.message.sendCaseName(lawCase.caseName)
-    this.itemList = this.data.filter(item => item.caseID == lawCase.caseID && item.accountID)
+    let itemList = this.data.filter(item => item.caseID == lawCase.caseID && item.accountID)
+    console.log(itemList)
+    this.itemList = itemList.map(item => {
+      let startAccount = new AccountNode();
+      startAccount.isFirstNode = true;
+      startAccount.id = item.accountID;
+      startAccount.queryDuration = parseInt(item.queryDuration);
+      this.caseID = parseInt(item.caseID);
+      startAccount.accountName = item.accountName;
+      startAccount.oppositeAccount = item.account;
+      startAccount.caseID = item.caseID;
+      startAccount.tradeTimes.push(moment(item.tradeTime));
+      startAccount.moneys.push(parseFloat(item.money));
+      return startAccount;
+    })
+    console.log(this.itemList)
   }
 
   onAddAccount(lawCase) {
@@ -107,7 +132,7 @@ export class RecordsComponent {
   }
 
   /**删除记录 */
-  onDelete(item) {
+  onDelete(item:AccountNode) {
     alertify.set({
       labels: { ok: "确定", cancel: "取消" }
     });
@@ -115,9 +140,9 @@ export class RecordsComponent {
       if (e) {
         let data = {
           tableName: 'start_account',
-          id: item.accountID
+          id: item.id
         }
-        this.sqlService.exec(PhpFunctionName.DEL, data).subscribe(res=>this.message.sendRefresh())
+        this.sqlService.exec(PhpFunctionName.DEL, data).subscribe(res => this.message.sendRefresh())
       }
     });
   }
@@ -167,11 +192,11 @@ export class RecordsComponent {
       res => {
         console.log(res)
         this.fileIndex++;
-        if(this.fileIndex < this.files.length){
+        if (this.fileIndex < this.files.length) {
           toastr.clear()
           toastr.info(`成功导入${records.length}条数据`)
           this.insertExcel()
-        }else{
+        } else {
           toastr.info(`数据上传完毕`);
           this.message.sendRefreshChart()
         }
@@ -208,9 +233,9 @@ export class RecordsComponent {
       // 交换值
     }
     if (o['inOrOut'] == '入') {
-      this.swipValue(o,'account','oppositeAccount');
-      this.swipValue(o,'accountBankName','oppositeBankName');
-      this.swipValue(o,'accountBankNumber', 'oppositeBankNumber');
+      this.swipValue(o, 'account', 'oppositeAccount');
+      this.swipValue(o, 'accountBankName', 'oppositeBankName');
+      this.swipValue(o, 'accountBankNumber', 'oppositeBankNumber');
     }
     o['inOrOut'] == '出' ? o['inOrOut'] = '借' : o['inOrOut'] = '贷'
     o['caseID'] = this.caseID
@@ -218,7 +243,7 @@ export class RecordsComponent {
     return o;
   }
 
-  private swipValue(o,p1,p2) {
+  private swipValue(o, p1, p2) {
     let temp = o[p1];
     o[p1] = o[p2];
     o[p2] = temp;
@@ -230,8 +255,8 @@ export class RecordsComponent {
     return false;
   }
 
-  private validateTime(record){
-    if(record.tradeTime && record.tradeTime.length != 14)
+  private validateTime(record) {
+    if (record.tradeTime && record.tradeTime.length != 14)
       return false;
     return true;
   }

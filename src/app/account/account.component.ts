@@ -12,7 +12,7 @@ declare var alertify;
 @Component({
   selector: 'app-account',
   templateUrl: './account.component.html',
-  styleUrls: ['./account.component.css']
+  styleUrls: ['./account.component.scss']
 })
 export class AccountComponent implements OnInit {
 
@@ -30,6 +30,7 @@ export class AccountComponent implements OnInit {
 
   
   level:number;
+  isFirstNode:boolean;
   
   
   
@@ -44,9 +45,10 @@ export class AccountComponent implements OnInit {
   set data(value: AccountNode) {
     this._data = value;
     this.level = value.level;
+    this.isFirstNode = value.isFirstNode;
   }
   
-  get data() {
+  get data():AccountNode {
     return this._data;
   }
   

@@ -9,7 +9,8 @@ export class AccountNode {
     moneys:Array<number> = [];
     tradeTimes:Array<any> = []
     leftMoneys = []
-    tradeNumbers = []
+    tradeNumbers = [];
+    isFirstNode:boolean = false;
     
     tradeDesc=''
     accountBankName = ''

@@ -39,14 +39,16 @@ export class AppComponent {
   ngOnInit() {
     console.log('app init')
     this.getData();
-
     this.messageService.refreshCaseList$.subscribe(
       res => { this.getData() }
     )
   }
 
   private getData() {
-    this.sqlService.exec(PhpFunctionName.SELECT_CASE_ACCOUNT, null).subscribe(res => { this.lawCase = res; })
+    this.sqlService.exec(PhpFunctionName.SELECT_CASE_ACCOUNT, null).subscribe(
+      res => {
+        this.lawCase = res;
+      })
   }
 
   set lawCase(value) {
@@ -62,7 +64,7 @@ export class AppComponent {
     return this._lawcases.filter(item => {
       let caseName = item['caseName'];
       let caseName_py = pinyin(caseName, { keepRest: true, firstCharacter: true, removeSpace: true })
-      console.log(caseName_py)
+      // console.log(caseName_py)
       return caseName.indexOf(val) >= 0 || caseName_py.indexOf(val) > 0
     })
   }

@@ -121,7 +121,7 @@ export class ChartComponent implements OnInit {
   }
 
   ngAfterViewChecked() {
-    console.log('app view checked')
+    // console.log('app view checked')
     if (!this.itemMap)
       return;
 

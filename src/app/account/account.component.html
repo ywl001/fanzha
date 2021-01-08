@@ -8,10 +8,19 @@
 </div> -->
 
 <div #root id="root" [style.top.px]="y" [style.left.px]="x" [style.background-color]="bgColor" (click)=onClick()>
-  <p>{{tradeTime}}-{{count}}-{{totalMoney}}元</p>
-  <p> {{secondLineContent}}</p>
-  <div class="btnDel" (click)="onDelete();$event.stopPropagation();" matTooltip="删除节点" matTooltipPosition=above></div>
-  <div class="btnConnect" (click)="onSetValue('lowerAccount');$event.stopPropagation();" matTooltip="添加下级节点" matTooltipPosition=above></div>
-  <div class="btnDuration" (click)="onSetValue('queryDuration');$event.stopPropagation();" matTooltip="设置查询时长" matTooltipPosition=above></div>
-  <div class="btnRemark" (click)="onSetValue('remark');$event.stopPropagation();" matTooltip="添加备注" matTooltipPosition=above></div>
+  <div class="text-container">
+    <p>{{tradeTime}}-{{count}}-{{totalMoney}}元</p>
+    <p> {{secondLineContent}}</p>
+  </div>
+  <div class="btn-container">
+    <div *ngIf="!isFirstNode" class="btn btnDel" (click)="onDelete();
+    $event.stopPropagation();" matTooltip="删除节点" matTooltipPosition=above>
+    </div>
+    <div class="btn btnConnect" *ngIf="!isFirstNode" (click)="onSetValue('lowerAccount');$event.stopPropagation();"
+      matTooltip="添加下级节点" matTooltipPosition=above></div>
+    <div class="btn btnDuration" (click)="onSetValue('queryDuration');$event.stopPropagation();" matTooltip="设置查询时长"
+      matTooltipPosition=above></div>
+    <div *ngIf="!isFirstNode" class="btn btnRemark" (click)="onSetValue('remark');$event.stopPropagation();"
+      matTooltip="添加备注" matTooltipPosition=above></div>
+  </div>
 </div>

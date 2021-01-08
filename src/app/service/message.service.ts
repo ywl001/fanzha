@@ -12,7 +12,9 @@ export class MessageService {
   private refreshChart = new BehaviorSubject('');
   private saveImage = new BehaviorSubject('');
   private layout = new BehaviorSubject(false);
+  private queryDuration = new BehaviorSubject(null);
   
+
   refreshCaseList$ = this.refreshCaseList.asObservable();
   accountNode$ = this.accountNode.asObservable();
   closeLeft$ = this.closeLeft.asObservable();
@@ -20,6 +22,7 @@ export class MessageService {
   refreshChart$ = this.refreshChart.asObservable();
   saveImage$ = this.saveImage.asObservable();
   layout$ = this.layout.asObservable();
+  queryDuration$ = this.queryDuration.asObservable();
   
   constructor() { }
 
@@ -51,5 +54,8 @@ export class MessageService {
     this.layout.next(value)
   }
 
- 
+  queryDurationChange(value){
+    this.queryDuration.next(value)
+  }
+
 }
