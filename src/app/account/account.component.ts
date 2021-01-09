@@ -30,15 +30,14 @@ export class AccountComponent implements OnInit {
 
   
   level:number;
+  //是否是第一个节点
   isFirstNode:boolean;
-  
-  
+  //是否是手动添加的假节点
+  isFalseNode:boolean;
   
   children: Array<AccountComponent> = [];
   parent:AccountComponent;
 
-
-  
   private _data: AccountNode;
   
   @Input()
@@ -46,6 +45,7 @@ export class AccountComponent implements OnInit {
     this._data = value;
     this.level = value.level;
     this.isFirstNode = value.isFirstNode;
+    this.isFalseNode = value.isFalseNode;
   }
   
   get data():AccountNode {

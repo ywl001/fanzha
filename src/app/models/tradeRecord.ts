@@ -1,0 +1,26 @@
+export interface TradeRecord {
+    id:number
+    account:string
+    accountBankName:string
+    accountBankNumber:string
+    oppositeAccount:string
+    oppositeBankName:string
+    oppositeBankNumber:string
+    oppositeName:string
+    money:number
+    leftMoney:number
+    inOrOut:string
+    tradeType:string
+    tradeTime:string
+    tradeNumber:string
+    tradeDesc:string
+    tradeResult:string
+    caseID:number
+    payeeName:string
+    payeeNumber:string
+    isThird:string
+    lowerAccount:string
+    queryDuration:number
+    tradeBankStationName:string
+    tradeBankName:string
+}

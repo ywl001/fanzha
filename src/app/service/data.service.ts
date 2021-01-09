@@ -109,7 +109,7 @@ export class DataService {
       for (let i = 0; i < res.length; i++) {
         const item = res[i];
         let node: AccountNode;
-        let key = item['isThird'] == '1' ? item['oppositeAccount'] + item['oppositeBankNumber'] : item['oppositeAccount'];
+        let key = item['isThird'] == '1' ? item['oppositeAccount'] + item['oppositeBankNumber'] : item['oppositeAccount']+item['tradeType'];
         if (key) {
           if (nodeMap.has(key)) {
             node = nodeMap.get(key)
@@ -132,6 +132,7 @@ export class DataService {
         //模拟下级账号
         if (item.lowerAccount) {
           let lowerNode = new AccountNode();
+          lowerNode.isFalseNode = true;
           lowerNode.account = item.account;
           lowerNode.oppositeAccount = item.lowerAccount;
           lowerNode.moneys.push(parseFloat(item.money));

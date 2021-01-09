@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { DataService } from '../service/data.service';
 import { PhpFunctionName } from '../models/phpFunctionName';
 import { AccountNode } from '../models/accountNode';
+import { TradeRecord } from '../models/tradeRecord';
 declare var alertify;
 
 
@@ -66,7 +67,7 @@ export class RecordsComponent {
 
     this.message.queryDuration$.subscribe(
       res => {
-        if (this.currentItem){
+        if (this.currentItem) {
           this.currentItem.queryDuration = res;
           this.message.sendRefreshChart()
         }
@@ -132,7 +133,7 @@ export class RecordsComponent {
   }
 
   /**删除记录 */
-  onDelete(item:AccountNode) {
+  onDelete(item: AccountNode) {
     alertify.set({
       labels: { ok: "确定", cancel: "取消" }
     });
@@ -168,6 +169,7 @@ export class RecordsComponent {
     }
   }
 
+  private 
   private getExcelData(file) {
     this.excelService.importExcel(file).subscribe(
       res => {
@@ -176,12 +178,15 @@ export class RecordsComponent {
         //   toastr.warning('交易时间格式不对，请修改交易时间')
         //   return ;
         // }
-        let isThird = this.isThird(res[0])
-        console.log('is third')
+        let isSwap = this.isAlipay(res);
+        const isThird = res[0].hasOwnProperty('付款支付帐号')
+        console.log('is third:' + isSwap)
         for (let i = 0; i < res.length; i++) {
-          let o: any;
-          isThird ? o = this.convertDataKey_third(res[i]) : o = this.convertDataKey(res[i])
-          datas.push(o);
+          let o: TradeRecord;
+          o = this.convertDataKey(res[i], isSwap,isThird);
+          if (o.account) {
+            datas.push(o);
+          }
         }
         this.insertData(datas)
       }
@@ -204,8 +209,8 @@ export class RecordsComponent {
     )
   }
 
-  private convertDataKey(data) {
-    let o = {};
+  private convertDataKey(data:any, isSwap:boolean,isThird:boolean) {
+    let o:any={};
     for (const key in data) {
       let newkey = this.field[key];
       if (newkey) {
@@ -215,44 +220,44 @@ export class RecordsComponent {
         o[newkey] = value;
       }
     }
-    //加上案件id
-    o['caseID'] = this.caseID
-    return o;
-  }
-
-  private convertDataKey_third(data) {
-    let o = {};
-    for (const key in data) {
-      let newkey = this.field[key];
-      if (newkey) {
-        let value = data[key];
-        if (value === "-")
-          value = null;
-        o[newkey] = value;
+    if (isSwap) {
+      if (o.inOrOut == '入') {
+        this.swipValue(o, 'account', 'oppositeAccount');
+        this.swipValue(o, 'accountBankName', 'oppositeBankName');
+        this.swipValue(o, 'accountBankNumber', 'oppositeBankNumber');
       }
-      // 交换值
     }
-    if (o['inOrOut'] == '入') {
-      this.swipValue(o, 'account', 'oppositeAccount');
-      this.swipValue(o, 'accountBankName', 'oppositeBankName');
-      this.swipValue(o, 'accountBankNumber', 'oppositeBankNumber');
-    }
-    o['inOrOut'] == '出' ? o['inOrOut'] = '借' : o['inOrOut'] = '贷'
-    o['caseID'] = this.caseID
-    o['isThird'] = 1
+    //加上案件id
+    if (o.inOrOut == '出') o.inOrOut = '借';
+    if (o.inOrOut == '入') o.inOrOut = '贷';
+    o.caseID = this.caseID;
+    if(isThird) o.isThird = '1'
     return o;
   }
 
-  private swipValue(o, p1, p2) {
-    let temp = o[p1];
-    o[p1] = o[p2];
-    o[p2] = temp;
+  private swipValue(o:TradeRecord, p1:string, p2:string) {
+    if (o.hasOwnProperty(p1) && o.hasOwnProperty(p2)) {
+      let temp = o[p1];
+      o[p1] = o[p2];
+      o[p2] = temp;
+    }
   }
 
-  private isThird(record) {
-    if (record.hasOwnProperty('付款支付帐号'))
-      return true;
-    return false;
+  /**是否是支付宝账号，支付宝账号需要交换账号的值 */
+  private isAlipay(records: any[]): boolean {
+    let len = records.length > 100 ? 100 : records.length;
+    for (let i = 0; i < len; i++) {
+      const item = records[i];
+      //银行卡
+      if (item.hasOwnProperty('查询账号'))
+        return false;
+      //财付通账户
+      if (item.hasOwnProperty('付款支付帐号')) {
+        if (item['付款支付帐号'].indexOf('wx.tenpay.com') != -1)
+          return false
+      }
+    }
+    return true;
   }
 
   private validateTime(record) {

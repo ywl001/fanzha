@@ -62,6 +62,8 @@ export class AddValueComponent {
       tableData: tableData,
       id: this.id
     }
+    console.log(this.isFirstNode)
+    console.log(data)
     this.sqlservice.exec(PhpFunctionName.UPDATE, data).subscribe(res => {
       if(this.isFirstNode){
         this.message.queryDurationChange(this.value)

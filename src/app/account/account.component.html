@@ -9,10 +9,10 @@
 
 <div #root id="root" [style.top.px]="y" [style.left.px]="x" [style.background-color]="bgColor" (click)=onClick()>
   <div class="text-container">
-    <p>{{tradeTime}}-{{count}}-{{totalMoney}}元</p>
+    <p>{{tradeTime}}-{{count}}-{{totalMoney|number:'1.1-10'}}元</p>
     <p> {{secondLineContent}}</p>
   </div>
-  <div class="btn-container">
+  <div *ngIf="!isFalseNode" class="btn-container">
     <div *ngIf="!isFirstNode" class="btn btnDel" (click)="onDelete();
     $event.stopPropagation();" matTooltip="删除节点" matTooltipPosition=above>
     </div>

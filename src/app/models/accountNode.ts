@@ -11,6 +11,7 @@ export class AccountNode {
     leftMoneys = []
     tradeNumbers = [];
     isFirstNode:boolean = false;
+    isFalseNode:boolean = false;
     
     tradeDesc=''
     accountBankName = ''

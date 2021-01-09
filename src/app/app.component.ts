@@ -35,7 +35,6 @@ export class AppComponent {
     private sqlService: SqlService) {
   }
 
-
   ngOnInit() {
     console.log('app init')
     this.getData();
