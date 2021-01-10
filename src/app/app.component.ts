@@ -76,7 +76,7 @@ export class AppComponent {
     this.dialog.open(AddCaseComponent, { disableClose: true });
   }
 
-  private _after: number = 1;
+  private _after: number = 0.2;
   get after() {
     return this._after;
   }

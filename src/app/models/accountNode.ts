@@ -33,4 +33,14 @@ export class AccountNode {
     remark:string=''
     isLowerAccount:boolean = false;
 
+    /**获取节点下的所有子节点 */
+    static getAllChild(node:AccountNode,children:Array<AccountNode>=[]){
+        const childs = node.children;
+        childs.forEach(node=>{
+            this.getAllChild(node,children);
+            children.push(node)
+        })
+        return children;
+    }
+
 }

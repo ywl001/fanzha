@@ -115,11 +115,11 @@ export class AccountComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('item ng init')
+    // console.log('item ng init')
   }
 
   ngAfterViewInit() {
-    console.log('item view checked')
+    // console.log('item view checked')
     this.h = this.rootDiv.nativeElement.clientHeight;
     this.w = this.rootDiv.nativeElement.clientWidth;
   }
@@ -183,10 +183,10 @@ export class AccountComponent implements OnInit {
   }
 
   onSetValue(e){
-    console.log(e)
+    console.log(e);
     let dialogRef = this.dialog.open(AddValueComponent, { disableClose: true });
     let data ={
-      data:this.data,
+      node:this.data,
       field:e,
     }
     dialogRef.componentInstance.data = data;

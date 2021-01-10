@@ -2,45 +2,63 @@ import { Injectable } from '@angular/core';
 import { SqlService } from './sql.service';
 import * as moment from 'moment'
 import { AccountNode } from '../models/accountNode';
-import { Observable } from 'rxjs';
 import { MessageService } from './message.service';
 import { PhpFunctionName } from '../models/phpFunctionName';
 import * as toastr from 'toastr';
 import { Common } from '../models/common';
+import { QueryDurationEvent } from '../models/queryDurationEvent';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
 
-  // private startAccount: AccountNode;
-  // private startTime: string;
-  // private endTime: string;
-  private caseID: number;
+  private caseID: string;
 
-  private times: number;
-
-  nodes: Array<any> = [];
-  waitCheckAccounts: Array<any> = [];
-
-  node$: Observable<Array<AccountNode>>;
+  nodes: Array<AccountNode> = [];
+  waitCheckAccounts: Array<AccountNode> = [];
   private currentAccount: AccountNode;
 
-  constructor(private sqlService: SqlService, private message: MessageService) { }
+  constructor(private sqlService: SqlService, private message: MessageService) {
+    message.queryDuration$.subscribe(e=>{this.durationChange(e)})
+  }
 
-  set data(value:AccountNode) {
+  private durationChange(e:QueryDurationEvent){
+    console.log(e)
+    if(e && e.node){
+      let node = e.node;
+      console.log('before')
+      console.log(this.nodes)
+      this.clearChildNode(node);
+      console.log('after:')
+      console.log(this.nodes)
+      node.queryDuration = e.duration;
+      this.waitCheckAccounts.push(node);
+      this.queryNodeByAccount(node);
+    }
+  }
+
+  private clearChildNode(node:AccountNode){
+    let children = AccountNode.getAllChild(node);
+    console.log('children:',children)
+    children.push(node);
+    for (let i = 0; i < children.length; i++) {
+      const node = children[i];
+      for (let j = 0; j < this.nodes.length; j++) {
+        const n = this.nodes[j];
+        if(n.id == node.id){
+          this.nodes.splice(j,1)
+        }
+      }
+    }
+  }
+
+  set data(value: AccountNode) {
     console.log(value)
-    this.times = 0;
-
     this.nodes = [];
-    // this.startTime = moment(value.trade).format('YYYYMMDDHHmmss')
-    // console.log(this.startTime)
-    // if(value.queryDuration)
-    // this.endTime = moment(value.tradeTime).add(Common.AFTER_TIME, 'h').format('YYYYMMDDHHmmss');
-    // console.log(this.endTime)
+    this.caseID = value.caseID;
     this.waitCheckAccounts.push(value);
     this.queryNodeByAccount(value)
-    this.times = 0;
   }
 
   private queryNodeByAccount(node: AccountNode) {
@@ -68,7 +86,7 @@ export class DataService {
 
   /**获得查询时间 */
   getQueryTime(node) {
-    console.log(node)
+    // console.log(node)
     let startMoment = this.getMinTime(node.tradeTimes)
     let startTime = startMoment.format('YYYY-MM-DD HH:mm:ss');
     //设置查询时长的结束时间
@@ -76,7 +94,8 @@ export class DataService {
     //正常的公共查询时间
     let endTime_normal = startMoment.clone().add(Common.AFTER_TIME, 'h').format('YYYY-MM-DD HH:mm:ss');
     let endTime = (node.queryDuration && node.queryDuration > 0) ? endTime_select : endTime_normal;
-    return{start:startTime,end:endTime}
+    // console.log(startTime,endTime)
+    return { start: startTime, end: endTime }
   }
 
   private getMinTime(datetimes) {
@@ -109,7 +128,7 @@ export class DataService {
       for (let i = 0; i < res.length; i++) {
         const item = res[i];
         let node: AccountNode;
-        let key = item['isThird'] == '1' ? item['oppositeAccount'] + item['oppositeBankNumber'] : item['oppositeAccount']+item['tradeType'];
+        let key = item['isThird'] == '1' ? item['oppositeAccount'] + item['oppositeBankNumber'] : item['oppositeAccount'] + item['tradeType'];
         if (key) {
           if (nodeMap.has(key)) {
             node = nodeMap.get(key)
@@ -151,7 +170,7 @@ export class DataService {
     this.nextAccount()
   }
 
-  private createNode(node: AccountNode, item) {
+  private createNode(node: AccountNode, item: any) {
     if (!node) {
       node = new AccountNode()
       for (const key in item) {
@@ -178,10 +197,10 @@ export class DataService {
     toastr.clear();
     this.nodes.push(this.waitCheckAccounts.shift())
     if (this.waitCheckAccounts.length > 0) {
-      this.times++;
       this.queryNodeByAccount(this.waitCheckAccounts[0])
     } else {
       this.message.sendAccountNode(this.nodes);
+      console.log('complete',this.nodes)
     }
   }
 }

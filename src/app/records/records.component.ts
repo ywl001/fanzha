@@ -68,8 +68,9 @@ export class RecordsComponent {
     this.message.queryDuration$.subscribe(
       res => {
         if (this.currentItem) {
-          this.currentItem.queryDuration = res;
-          this.message.sendRefreshChart()
+          console.log('recore query duration')
+          if(res.isFirstNode)
+            this.currentItem.queryDuration = res.duration;
         }
       }
     )
@@ -148,6 +149,8 @@ export class RecordsComponent {
     });
   }
 
+  /////////////////////////////////////////////下面是导入excel数据/////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////
   onAddFile($event) {
     this.inputFile.nativeElement.click()
   }

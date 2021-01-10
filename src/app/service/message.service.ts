@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { QueryDurationEvent } from '../models/queryDurationEvent';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,9 @@ export class MessageService {
   private refreshChart = new BehaviorSubject('');
   private saveImage = new BehaviorSubject('');
   private layout = new BehaviorSubject(false);
-  private queryDuration = new BehaviorSubject(null);
+  private queryDuration = new BehaviorSubject<QueryDurationEvent>(null);
+  private lowerAccount = new BehaviorSubject('');
+  private remark = new BehaviorSubject('');
   
 
   refreshCaseList$ = this.refreshCaseList.asObservable();
@@ -23,6 +26,8 @@ export class MessageService {
   saveImage$ = this.saveImage.asObservable();
   layout$ = this.layout.asObservable();
   queryDuration$ = this.queryDuration.asObservable();
+  lowerAccount$ = this.lowerAccount.asObservable();
+  remark$ = this.remark.asObservable();
   
   constructor() { }
 
@@ -54,8 +59,17 @@ export class MessageService {
     this.layout.next(value)
   }
 
-  queryDurationChange(value){
+  queryDurationChange(value:QueryDurationEvent){
     this.queryDuration.next(value)
   }
+
+  addLowerAccount(lowerAccout:string){
+    this.lowerAccount.next(lowerAccout)
+  }
+
+  addRemark(){
+    this.remark.next('')
+  }
+
 
 }

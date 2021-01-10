@@ -229,7 +229,7 @@ export class ChartComponent implements OnInit {
       const element = items_level[i];
       element.x = (element.x > prevItem.x + prevItem.w + this.gap_w_v) ? element.x : prevItem.x + prevItem.w + this.gap_w_v;
       prevItem = element;
-      console.log('跟随移动了' + dx)
+      // console.log('跟随移动了' + dx)
     }
   }
 
