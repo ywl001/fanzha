@@ -14,9 +14,8 @@ export class MessageService {
   private saveImage = new BehaviorSubject('');
   private layout = new BehaviorSubject(false);
   private queryDuration = new BehaviorSubject<QueryDurationEvent>(null);
-  private lowerAccount = new BehaviorSubject('');
-  private remark = new BehaviorSubject('');
-  
+  private lowerAccount = new BehaviorSubject(null);
+  private delNode = new BehaviorSubject(null)
 
   refreshCaseList$ = this.refreshCaseList.asObservable();
   accountNode$ = this.accountNode.asObservable();
@@ -27,8 +26,8 @@ export class MessageService {
   layout$ = this.layout.asObservable();
   queryDuration$ = this.queryDuration.asObservable();
   lowerAccount$ = this.lowerAccount.asObservable();
-  remark$ = this.remark.asObservable();
-  
+  delNode$ = this.delNode.asObservable();
+
   constructor() { }
 
   sendRefresh(){
@@ -63,13 +62,12 @@ export class MessageService {
     this.queryDuration.next(value)
   }
 
-  addLowerAccount(lowerAccout:string){
-    this.lowerAccount.next(lowerAccout)
+  addLowerAccount(value){
+    this.lowerAccount.next(value)
   }
 
-  addRemark(){
-    this.remark.next('')
+  delNodeComplete(node){
+    this.delNode.next(node);
   }
-
 
 }

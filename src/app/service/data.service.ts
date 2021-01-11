@@ -20,34 +20,47 @@ export class DataService {
   private currentAccount: AccountNode;
 
   constructor(private sqlService: SqlService, private message: MessageService) {
-    message.queryDuration$.subscribe(e=>{this.durationChange(e)})
+    message.queryDuration$.subscribe(e => { this.durationChange(e) });
+    message.lowerAccount$.subscribe(e=>this.addLowerAccount(e));
+    message.delNode$.subscribe(e=>{this.delNode(e)})
   }
 
-  private durationChange(e:QueryDurationEvent){
-    console.log(e)
-    if(e && e.node){
+  private durationChange(e: QueryDurationEvent) {
+    if (e && e.node) {
       let node = e.node;
-      console.log('before')
-      console.log(this.nodes)
       this.clearChildNode(node);
-      console.log('after:')
-      console.log(this.nodes)
       node.queryDuration = e.duration;
       this.waitCheckAccounts.push(node);
       this.queryNodeByAccount(node);
     }
   }
+  private addLowerAccount(e){
+    if(e && e.node){
+      const lowerNode = this.createFalseNode(e.node,e.account);
+      this.waitCheckAccounts.push(lowerNode);
+      this.queryNodeByAccount(lowerNode);
+    }
+  }
 
-  private clearChildNode(node:AccountNode){
-    let children = AccountNode.getAllChild(node);
-    console.log('children:',children)
-    children.push(node);
-    for (let i = 0; i < children.length; i++) {
-      const node = children[i];
-      for (let j = 0; j < this.nodes.length; j++) {
-        const n = this.nodes[j];
-        if(n.id == node.id){
-          this.nodes.splice(j,1)
+  private delNode(e:AccountNode){
+    if(e){
+      this.clearChildNode(e);
+      this.message.sendAccountNode(this.nodes);
+    }
+  }
+
+  private clearChildNode(node: AccountNode) {
+    console.log('clear child node')
+    if(node){
+      let children = AccountNode.getAllChild(node);
+      children.push(node);
+      for (let i = 0; i < children.length; i++) {
+        const node = children[i];
+        for (let j = 0; j < this.nodes.length; j++) {
+          const n = this.nodes[j];
+          if (n.id == node.id) {
+            this.nodes.splice(j, 1)
+          }
         }
       }
     }
@@ -93,19 +106,18 @@ export class DataService {
     let endTime_select = startMoment.clone().add(node.queryDuration, 'h').format('YYYY-MM-DD HH:mm:ss');
     //正常的公共查询时间
     let endTime_normal = startMoment.clone().add(Common.AFTER_TIME, 'h').format('YYYY-MM-DD HH:mm:ss');
-    let endTime = (node.queryDuration && node.queryDuration > 0) ? endTime_select : endTime_normal;
+    let endTime = (node.queryDuration) ? endTime_select : endTime_normal;
     // console.log(startTime,endTime)
     return { start: startTime, end: endTime }
   }
 
-  private getMinTime(datetimes) {
-    let a = datetimes[0];
-    for (let i = 0; i < datetimes.length; i++) {
-      const time = datetimes[i];
-      if (time.isSameOrBefore(a))
-        a = time;
-    }
-    return a;
+  //获取多个交易时间中的最小值
+  private getMinTime(datetimes:any[]) {
+    return datetimes.reduce((pre,cur)=>{
+      if(pre.isSameOrBefore(cur)) cur = pre;
+      console.log(cur)
+      return cur;
+    })
   }
 
   /**获得查询的账号 */
@@ -140,7 +152,7 @@ export class DataService {
           }
         } else {
           //空账号
-          if (item.payeeName == '手续费' || Math.abs(parseFloat(item.money)) < 100)
+          if (item.payeeName == '手续费')
             continue;
           else {
             node = this.createNode(null, item);
@@ -150,19 +162,7 @@ export class DataService {
 
         //模拟下级账号
         if (item.lowerAccount) {
-          let lowerNode = new AccountNode();
-          lowerNode.isFalseNode = true;
-          lowerNode.account = item.account;
-          lowerNode.oppositeAccount = item.lowerAccount;
-          lowerNode.moneys.push(parseFloat(item.money));
-          lowerNode.tradeTimes.push(moment(item.tradeTime));
-          lowerNode.level = node.level + 1;
-          lowerNode.parentAccount = node;
-          lowerNode.id = item.id;
-          lowerNode.queryDuration = item.queryDuration;
-          lowerNode.isLowerAccount = true;
-          lowerNode.lowerAccount = item.lowerAccount;
-          node.children.push(lowerNode);
+          const lowerNode = this.createFalseNode(node,node.lowerAccount)
           this.waitCheckAccounts.push(lowerNode)
         }
       }
@@ -185,6 +185,7 @@ export class DataService {
       this.currentAccount.children.push(node);
       node.parentAccount = this.currentAccount;
     }
+    node.ids.push(item.id)
     node.moneys.push(parseFloat(item['money']));
     node.tradeTimes.push(moment(item['tradeTime']))
     node.leftMoneys.push(parseFloat(item['leftMoney']))
@@ -200,7 +201,24 @@ export class DataService {
       this.queryNodeByAccount(this.waitCheckAccounts[0])
     } else {
       this.message.sendAccountNode(this.nodes);
-      console.log('complete',this.nodes)
+      console.log('complete', this.nodes)
     }
+  }
+
+  private createFalseNode(node: AccountNode, account: string): AccountNode {
+    let lowerNode = new AccountNode();
+    lowerNode.isFalseNode = true;
+    lowerNode.account = node.account;
+    lowerNode.oppositeAccount = node.lowerAccount;
+    lowerNode.moneys = node.moneys;
+    lowerNode.tradeTimes = node.tradeTimes;
+    lowerNode.level = node.level + 1;
+    lowerNode.parentAccount = node;
+    lowerNode.id = node.id;
+    lowerNode.queryDuration = node.queryDuration;
+    lowerNode.isLowerAccount = true;
+    lowerNode.lowerAccount = node.lowerAccount;
+    node.children.push(lowerNode);
+    return lowerNode;
   }
 }

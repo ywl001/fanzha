@@ -20,7 +20,7 @@ export class AccountComponent implements OnInit {
 
   constructor(private sqlService: SqlService,
     public dialog: MatDialog,
-    private message:MessageService) { }
+    private message: MessageService) { }
 
   w: number;
   h: number;
@@ -28,30 +28,31 @@ export class AccountComponent implements OnInit {
   x: number;
   y: number;
 
-  
-  level:number;
+
+  level: number;
   //是否是第一个节点
-  isFirstNode:boolean;
+  isFirstNode: boolean;
   //是否是手动添加的假节点
-  isFalseNode:boolean;
-  
+  isFalseNode: boolean;
+
   children: Array<AccountComponent> = [];
-  parent:AccountComponent;
+  parent: AccountComponent;
 
   private _data: AccountNode;
-  
+
   @Input()
   set data(value: AccountNode) {
     this._data = value;
     this.level = value.level;
     this.isFirstNode = value.isFirstNode;
     this.isFalseNode = value.isFalseNode;
+
   }
-  
-  get data():AccountNode {
+
+  get data(): AccountNode {
     return this._data;
   }
-  
+
   // private _position;
   // set position(value) {
   //   this._position = value;
@@ -81,35 +82,35 @@ export class AccountComponent implements OnInit {
     return ''
   }
 
-  private getMinTime(datetimes){
+  private getMinTime(datetimes) {
     let a = datetimes[0];
     for (let i = 0; i < datetimes.length; i++) {
       const time = datetimes[i];
-      if(time.isSameOrBefore(a))
+      if (time.isSameOrBefore(a))
         a = time;
     }
     return a;
   }
 
-  get bgColor(){
-    if(this.data.isLowerAccount)
+  get bgColor() {
+    if (this.data.isLowerAccount)
       return 'lightBlue'
-    if(this.data.remark)
+    if (this.data.remark)
       return 'lightPink'
     return 'lightseagreen'
   }
 
-  get secondLineContent(){
+  get secondLineContent() {
     let str = '';
-    if(this.data.oppositeName)
+    if (this.data.oppositeName)
       str = this.data.oppositeName;
-    else if(this.data.oppositeBankNumber)
+    else if (this.data.oppositeBankNumber)
       str = this.data.oppositeBankNumber
-    else if(this.data.oppositeAccount)
+    else if (this.data.oppositeAccount)
       str = this.data.oppositeAccount;
-    else if(this.data.tradeType)
-      str = this.data.tradeType+'--'+this.data.tradeBankStationName
-    else if(this.data.payeeName)
+    else if (this.data.tradeType)
+      str = this.data.tradeType + '--' + this.data.tradeBankStationName
+    else if (this.data.payeeName)
       str = this.data.payeeName
     return str;
   }
@@ -155,39 +156,31 @@ export class AccountComponent implements OnInit {
     });
     alertify.confirm("确定要删除该记录吗？", e => {
       if (e) {
-        if(this.data.oppositeAccount){
-          let data={
-            account:this.data.oppositeAccount,
-            caseID:this.data.caseID
-          }
-          this.sqlService.exec(PhpFunctionName.DEL_RECORD_BY_ACCOUNT,data).subscribe(res => {
-              this.message.sendRefreshChart()
-          })
-        }else{
-          let data = {
-            tableName:'trade_record',
-            id:this.data.id
-          }
-          this.sqlService.exec(PhpFunctionName.DEL,data).subscribe(res=>{
-            this.message.sendRefreshChart()
-          })
+        let data = {
+          tableName: 'trade_record',
+          ids: this.data.ids.join(',')
         }
+        this.sqlService.exec(PhpFunctionName.DEL_BY_IDS, data).subscribe(res => {
+          console.log('del ok')
+          this.message.delNodeComplete(this.data)
+        })
       }
     });
   }
 
- 
-  onClick(){
+
+  onClick() {
     let dialogRef = this.dialog.open(AccountDetailComponent);
     dialogRef.componentInstance.data = this.data;
+    console.log(this.data)
   }
 
-  onSetValue(e){
+  onSetValue(e) {
     console.log(e);
     let dialogRef = this.dialog.open(AddValueComponent, { disableClose: true });
-    let data ={
-      node:this.data,
-      field:e,
+    let data = {
+      node: this.data,
+      field: e,
     }
     dialogRef.componentInstance.data = data;
   }

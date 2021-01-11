@@ -72,7 +72,11 @@ export class AddValueComponent {
       //   this.message.sendRefreshChart()
       // }
       if(this.field == 'lowerAccount'){
-        this.message.addLowerAccount(this.value)
+        let data={
+          node:this.node,
+          account:this.value
+        }
+        this.message.addLowerAccount(data)
       }else if(this.field == 'queryDuration'){
         let data={
           isFirstNode:this.isFirstNode,
@@ -81,7 +85,7 @@ export class AddValueComponent {
         }
         this.message.queryDurationChange(data)
       }else if(this.field == 'remark'){
-        this.message.addRemark()
+        this.node.remark = this.value
       }
     })
   }

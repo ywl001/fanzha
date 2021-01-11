@@ -36,7 +36,12 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    console.log('app init')
+    console.log('app init');
+    const arr = [9,8,5,10,3];
+    console.log(arr.reduce((pre,cur)=>{
+      if(pre>cur) cur = pre;
+      return cur
+    }))
     this.getData();
     this.messageService.refreshCaseList$.subscribe(
       res => { this.getData() }

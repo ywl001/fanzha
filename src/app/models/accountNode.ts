@@ -5,6 +5,7 @@ export class AccountNode {
     account:string = '';
     accountName:string = '';
     parentAccount:AccountNode = null;
+    ids:Array<string> = [];
     children:Array<AccountNode> = [];
     moneys:Array<number> = [];
     tradeTimes:Array<any> = []
