@@ -30,7 +30,8 @@
               "src/assets/alertify.default.css"
             ],
             "scripts": [
-              "src/assets/alertify.min.js"
+              "src/assets/alertify.min.js",
+              "./node_modules/circular-json/build/circular-json.js"
             ]
           },
           "configurations": {

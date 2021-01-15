@@ -12,13 +12,14 @@ import { DataService } from '../service/data.service';
 import { PhpFunctionName } from '../models/phpFunctionName';
 import { AccountNode } from '../models/accountNode';
 import { TradeRecord } from '../models/tradeRecord';
+import { LocalStorgeService } from '../service/local-storge.service';
 declare var alertify;
 
 
 @Component({
   selector: 'app-records',
   templateUrl: './records.component.html',
-  styleUrls: ['./records.component.css']
+  styleUrls: ['./records.component.scss']
 })
 export class RecordsComponent {
 
@@ -39,7 +40,7 @@ export class RecordsComponent {
   private caseID: any;
 
   /**当前显示的流程图的账号，当流程数据修改时，刷新视图使用 */
-  private currentItem: AccountNode;
+  currentItem: AccountNode;
 
   /**html中input的引用 */
   @ViewChild('inputFile', { static: false }) inputFile: ElementRef;
@@ -50,7 +51,8 @@ export class RecordsComponent {
     private excelService: ExcelService,
     public dialog: MatDialog,
     private message: MessageService,
-    private dataService: DataService) {
+    private dataService: DataService,
+    private localService:LocalStorgeService) {
   }
 
   ngOnInit() {
@@ -113,6 +115,8 @@ export class RecordsComponent {
       startAccount.caseID = item.caseID;
       startAccount.tradeTimes.push(moment(item.tradeTime));
       startAccount.moneys.push(parseFloat(item.money));
+
+      // console.log(startAccount.oppositeAccount+':'+startAccount.queryDuration)
       return startAccount;
     })
     console.log(this.itemList)
@@ -130,7 +134,18 @@ export class RecordsComponent {
 
   onItemClick(item) {
     this.currentItem = item;
-    this.dataService.data = item;
+    console.log(item)
+    const key = item.caseID +'-'+ item.oppositeAccount+'-'+item.tradeTimes[0];
+    const nodes = this.localService.getObject(key);
+    if(nodes){
+      // console.log(nodes);
+      //此处维护dataService的nodes，
+      this.dataService.nodes = nodes;
+      this.message.sendAccountNode(nodes)
+    }else{
+      this.dataService.data = item;
+    }
+    
   }
 
   /**删除记录 */
@@ -172,7 +187,6 @@ export class RecordsComponent {
     }
   }
 
-  private 
   private getExcelData(file) {
     this.excelService.importExcel(file).subscribe(
       res => {
@@ -206,7 +220,9 @@ export class RecordsComponent {
           this.insertExcel()
         } else {
           toastr.info(`数据上传完毕`);
-          this.message.sendRefreshChart()
+          const key = this.currentItem.caseID +'-'+ this.currentItem.oppositeAccount+'-'+this.currentItem.tradeTimes[0];
+          this.localService.remove(key);
+          this.message.sendRefreshChart();
         }
       }
     )

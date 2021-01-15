@@ -1,13 +1,13 @@
 <div class="root">
   <div class="leftContainer">
-    <div class="left_top">
-      <button id=btnAddCase mat-raised-button color="primary" (click)=onAddCase()>添加案件</button>
+    <div class="left-top">
+      <button style="width: 100%;border-radius: 0;" mat-raised-button color="primary" (click)=onAddCase()>添加案件</button>
     </div>
-    <div class="left_middle">
+    <div class="left-middle">
       <app-records [data]=filterCase$|async></app-records>
     </div>
 
-    <div class="left_bottom">
+    <div class="left-bottom">
       <!-- <mat-checkbox [(ngModel)]="isHasAccount">有账号</mat-checkbox> -->
       <mat-form-field style="width: 100%; margin-bottom: -1em;">
         <input matInput [value]="filterCase" [formControl]="caseControl" placeholder="过滤。。" autocomplete="off">
@@ -19,13 +19,15 @@
     <app-chart></app-chart>
   </div>
 
+  <div class="btnContainer">
+    <button mat-raised-button color="primary" (click)=onSaveImage()>保存图片</button>
+    <button mat-raised-button color="primary" (click)=onLayout($event)>横向排列</button>
+  </div>
+
   <mat-form-field style="width: 80px;position:absolute;right: 30px;top:50px">
     <mat-label>转账后(小时)</mat-label>
     <input matInput type="number" [(ngModel)]="after" autocomplete="off">
   </mat-form-field>
-
-  <button id="btnClear" mat-raised-button color="primary" (click)=onSaveImage()>保存图片</button>
-  <button id="btnLayout" mat-raised-button color="primary" (click)=onLayout($event)>横向排列</button>
 
   <div id="toggleLeft" class="toggleLeft" (click)="onToggleLeft()"></div>
 </div>

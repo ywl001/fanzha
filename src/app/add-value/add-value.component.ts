@@ -16,17 +16,19 @@ export class AddValueComponent {
   lable: string;
 
   /**input的值 */
-  value: string;
+  value:string;
 
   /**input 的类型*/
   type: string = 'text'
 
   // private tableData: any;
   private id;
-  private field: string;
-  private tableName:string;
-  private isFirstNode:boolean;
-  private node:AccountNode;
+  field: string;
+  private tableName: string;
+  private isFirstNode: boolean;
+  private node: AccountNode;
+
+  placeholder:string;
 
   constructor(private sqlservice: SqlService, private message: MessageService) { }
 
@@ -42,13 +44,15 @@ export class AddValueComponent {
     if (this.field == 'lowerAccount') {
       this.title = '手动增加下级节点';
       this.lable = '下级节点';
+      this.placeholder = '如果多个下级节点，请使用|分割'
       this.value = this.node.lowerAccount;
     } else if (this.field == 'queryDuration') {
       this.title = '改变查询时长';
       this.lable = '查询时长';
       this.type = 'number';
-      if(this.node && this.node.queryDuration)
-        this.value = this.node.queryDuration.toString();
+      this.placeholder = '0 不查询该节点'
+      if (this.node)
+        this.value = this.node.queryDuration+'';
     } else if (this.field == 'remark') {
       this.title = '添加节点备注';
       this.lable = '备注';
@@ -71,20 +75,21 @@ export class AddValueComponent {
       // }else{
       //   this.message.sendRefreshChart()
       // }
-      if(this.field == 'lowerAccount'){
-        let data={
-          node:this.node,
-          account:this.value
+      if (this.field == 'lowerAccount') {
+        let data = {
+          node: this.node,
+          account: this.value
         }
         this.message.addLowerAccount(data)
-      }else if(this.field == 'queryDuration'){
-        let data={
-          isFirstNode:this.isFirstNode,
-          node:this.node,
-          duration:parseFloat(this.value)
+      } else if (this.field == 'queryDuration') {
+        let data = {
+          isFirstNode: this.isFirstNode,
+          node: this.node,
+          duration: parseFloat(this.value)
         }
+        console.log(parseFloat(this.value))
         this.message.queryDurationChange(data)
-      }else if(this.field == 'remark'){
+      } else if (this.field == 'remark') {
         this.node.remark = this.value
       }
     })

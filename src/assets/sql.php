@@ -1,5 +1,5 @@
 <?php
-$link = mysql_connect("localhost", "root", "ywl6918592");
+$link = mysql_connect("localhost", "root", "123");
 if (!$link) {
 	echo "数据库连接失败" . mysql_error();
 }
@@ -27,7 +27,9 @@ function selectCaseAccount($data)
 				account,
 				accountName,
 				tradeTime,
-				money 
+				money,
+				queryDuration,
+				remark
 			from law_case left join start_account 
 			on law_case.id = start_account.caseID";
 
@@ -40,7 +42,7 @@ function selectAccountOutRecord($data)
 	where account = '$data->account' 
 	and tradeTime >= '$data->startTime' 
 	and tradeTime < '$data->endTime' 
-	and inOrOut = '借'";
+	and inOrOut = '借' order by tradeTime";
 	getSelectResult($sql);
 }
 
@@ -100,6 +102,7 @@ function insertArray($data)
 
 	$result = mysql_query($sql);
 	echo json_encode($result);
+	//echo json_encode($sql);
 }
 
 function update($data)
@@ -109,7 +112,10 @@ function update($data)
 	$id = $data->id;
 	$sql = "update $tableName set ";
 	foreach ($tableData as $key => $value) {
-		$sql .= "$key='$value',";
+		if($value == null || $value == NaN || $value == '' || $value == 'null')
+			$sql.="$key = null,";
+		else
+			$sql .= "$key='$value',";
 	}
 	$sql = substr($sql, 0, strlen($sql) - 1) . " where id = $id";
 
@@ -123,6 +129,15 @@ function del($data){
 	$sql = "delete from $tableName where id = $id";
 	$result = mysql_query($sql);
 	echo json_encode($result);
+}
+
+function delByIds($data){
+	$tableName = $data->tableName;
+	$ids = $data->ids;
+	$sql = "delete from $tableName where id in($ids)";
+	$result = mysql_query($sql);
+	echo json_encode($result);
+	//echo json_encode($sql);
 }
 
 function delRecordByAccount($data){

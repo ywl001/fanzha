@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { QueryDurationEvent } from '../models/queryDurationEvent';
+import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
+import { AddLowerAccountEvent, QueryDurationEvent } from '../models/editNodeEvent';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +14,9 @@ export class MessageService {
   private saveImage = new BehaviorSubject('');
   private layout = new BehaviorSubject(false);
   private queryDuration = new BehaviorSubject<QueryDurationEvent>(null);
-  private lowerAccount = new BehaviorSubject(null);
+  private lowerAccount = new ReplaySubject<AddLowerAccountEvent>();
   private delNode = new BehaviorSubject(null)
+  private saveData = new ReplaySubject();
 
   refreshCaseList$ = this.refreshCaseList.asObservable();
   accountNode$ = this.accountNode.asObservable();
@@ -27,6 +28,7 @@ export class MessageService {
   queryDuration$ = this.queryDuration.asObservable();
   lowerAccount$ = this.lowerAccount.asObservable();
   delNode$ = this.delNode.asObservable();
+  saveData$ = this.saveData.asObservable();
 
   constructor() { }
 
@@ -68,6 +70,10 @@ export class MessageService {
 
   delNodeComplete(node){
     this.delNode.next(node);
+  }
+
+  saveDataMessage(){
+    this.saveData.next();
   }
 
 }

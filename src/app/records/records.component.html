@@ -12,8 +12,8 @@
       <button mat-button (click)=onEditCase(lawCase)>修改案件</button>
     </div>
 
-    <div class="item" *ngFor="let item of itemList" (click)="onItemClick(item);$event.stopPropagation();">
-      <span class='account'> {{item.oppositeAccount}} </span>
+    <div class="itemContainer selected" [class.selected] = "item == currentItem" *ngFor="let item of itemList" (click)="onItemClick(item);$event.stopPropagation();">
+      <div class='account'> {{item.oppositeAccount}} </div>
       <div class="btnDel" (click)="onDelete(item);$event.stopPropagation();"></div>
     </div>
   </mat-expansion-panel>

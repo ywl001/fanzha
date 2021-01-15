@@ -3,9 +3,8 @@
 <mat-dialog-content style="height: 100px;">
   <mat-form-field style="width: 350px;">
     <mat-label>{{lable}}</mat-label>
-    <input matInput [(ngModel)]='value' type="{{type}}">
+    <input matInput [(ngModel)]='value' type="{{type}}" [placeholder]="placeholder">
   </mat-form-field>
-  <br/>
 </mat-dialog-content>
 
 <mat-dialog-actions>

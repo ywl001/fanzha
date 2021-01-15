@@ -5,3 +5,8 @@ export interface QueryDurationEvent{
     duration:number;
     isFirstNode:boolean;
 }
+
+export interface AddLowerAccountEvent{
+    node:AccountNode;
+    account:string;
+}

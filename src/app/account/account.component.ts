@@ -6,6 +6,7 @@ import { PhpFunctionName } from '../models/phpFunctionName';
 import { MatDialog } from '@angular/material';
 import { AccountDetailComponent } from '../account-detail/account-detail.component';
 import { AddValueComponent } from '../add-value/add-value.component';
+import * as moment from 'moment';
 
 declare var alertify;
 
@@ -64,6 +65,10 @@ export class AccountComponent implements OnInit {
   //   return this._position;
   // }
 
+  // isShowBtn():boolean{
+
+  // }
+
   get totalMoney() {
     let t = 0;
     this.data.moneys.forEach(item => { t += item });
@@ -102,16 +107,22 @@ export class AccountComponent implements OnInit {
 
   get secondLineContent() {
     let str = '';
-    if (this.data.oppositeName)
+    if (this.data.tradeDesc && this.data.tradeDesc.indexOf('ATM') != -1)
+      str = this.data.tradeDesc +'---'+ this.data.tradeBankStationName;
+    else if (this.data.tradeType && this.data.tradeType.indexOf('ATM') != -1)
+      str = this.data.tradeType + '---'+ this.data.tradeBankStationName;
+    else if (this.data.oppositeName)
       str = this.data.oppositeName;
     else if (this.data.oppositeBankNumber)
       str = this.data.oppositeBankNumber
     else if (this.data.oppositeAccount)
       str = this.data.oppositeAccount;
-    else if (this.data.tradeType)
-      str = this.data.tradeType + '--' + this.data.tradeBankStationName
     else if (this.data.payeeName)
-      str = this.data.payeeName
+      str = this.data.payeeName;
+    else if(this.data.tradeBankStationName)
+      str = this.data.tradeBankStationName;
+    else if(this.data.tradeType)
+      str = this.data.tradeType;
     return str;
   }
 
