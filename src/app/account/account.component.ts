@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material';
 import { AccountDetailComponent } from '../account-detail/account-detail.component';
 import { AddValueComponent } from '../add-value/add-value.component';
 import * as moment from 'moment';
+import { ChangeDurationComponent } from '../change-duration/change-duration.component';
 
 declare var alertify;
 
@@ -108,9 +109,9 @@ export class AccountComponent implements OnInit {
   get secondLineContent() {
     let str = '';
     if (this.data.tradeDesc && this.data.tradeDesc.indexOf('ATM') != -1)
-      str = this.data.tradeDesc +'---'+ this.data.tradeBankStationName;
+      str = this.data.tradeDesc + '---' + this.data.tradeBankStationName;
     else if (this.data.tradeType && this.data.tradeType.indexOf('ATM') != -1)
-      str = this.data.tradeType + '---'+ this.data.tradeBankStationName;
+      str = this.data.tradeType + '---' + this.data.tradeBankStationName;
     else if (this.data.oppositeName)
       str = this.data.oppositeName;
     else if (this.data.oppositeBankNumber)
@@ -119,9 +120,9 @@ export class AccountComponent implements OnInit {
       str = this.data.oppositeAccount;
     else if (this.data.payeeName)
       str = this.data.payeeName;
-    else if(this.data.tradeBankStationName)
+    else if (this.data.tradeBankStationName)
       str = this.data.tradeBankStationName;
-    else if(this.data.tradeType)
+    else if (this.data.tradeType)
       str = this.data.tradeType;
     return str;
   }
@@ -173,7 +174,7 @@ export class AccountComponent implements OnInit {
         }
         this.sqlService.exec(PhpFunctionName.DEL_BY_IDS, data).subscribe(res => {
           console.log('del ok')
-          this.message.delNodeComplete(this.data)
+          this.message.delNode(this.data)
         })
       }
     });
@@ -194,5 +195,10 @@ export class AccountComponent implements OnInit {
       field: e,
     }
     dialogRef.componentInstance.data = data;
+  }
+
+  onChangDuration() {
+    let dialogRef = this.dialog.open(ChangeDurationComponent, { disableClose: true});
+    dialogRef.componentInstance.data = this.data;
   }
 }

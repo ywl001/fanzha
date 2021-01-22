@@ -43,7 +43,7 @@ export class AppComponent {
       return cur
     }))
     this.getData();
-    this.messageService.refreshCaseList$.subscribe(
+    this.messageService.CaseListChange$.subscribe(
       res => { this.getData() }
     )
   }
@@ -81,14 +81,14 @@ export class AppComponent {
     this.dialog.open(AddCaseComponent, { disableClose: true });
   }
 
-  private _after: number = 0.2;
-  get after() {
-    return this._after;
-  }
-  set after(value) {
-    this._after = value
-    Common.AFTER_TIME = value;
-  }
+  // private _after: number = 0.2;
+  // get after() {
+  //   return this._after;
+  // }
+  // set after(value) {
+  //   this._after = value
+  //   Common.AFTER_TIME = value;
+  // }
 
   //面板开关
   private _isLeftOpen = true;
@@ -142,6 +142,6 @@ export class AppComponent {
   onLayout(e) {
     let value = e.target.innerText == '横向排列';
     e.target.innerText = value ? '纵向排列' : '横向排列';
-    this.messageService.sendLayout(value)
+    this.messageService.layoutChange(value)
   }
 }

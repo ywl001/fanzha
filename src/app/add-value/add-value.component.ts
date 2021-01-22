@@ -46,13 +46,6 @@ export class AddValueComponent {
       this.lable = '下级节点';
       this.placeholder = '如果多个下级节点，请使用|分割'
       this.value = this.node.lowerAccount;
-    } else if (this.field == 'queryDuration') {
-      this.title = '改变查询时长';
-      this.lable = '查询时长';
-      this.type = 'number';
-      this.placeholder = '0 不查询该节点'
-      if (this.node)
-        this.value = this.node.queryDuration+'';
     } else if (this.field == 'remark') {
       this.title = '添加节点备注';
       this.lable = '备注';
@@ -81,14 +74,6 @@ export class AddValueComponent {
           account: this.value
         }
         this.message.addLowerAccount(data)
-      } else if (this.field == 'queryDuration') {
-        let data = {
-          isFirstNode: this.isFirstNode,
-          node: this.node,
-          duration: parseFloat(this.value)
-        }
-        console.log(parseFloat(this.value))
-        this.message.queryDurationChange(data)
       } else if (this.field == 'remark') {
         this.node.remark = this.value
       }

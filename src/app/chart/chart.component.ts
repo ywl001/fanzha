@@ -41,7 +41,7 @@ export class ChartComponent implements OnInit {
     private cdf: ChangeDetectorRef) { }
 
   ngOnInit() {
-    this.messageService.accountNode$.subscribe(
+    this.messageService.showChart$.subscribe(
       nodes => { this.showNodes(nodes) }
     )
     this.messageService.saveImage$.subscribe(
@@ -50,7 +50,7 @@ export class ChartComponent implements OnInit {
     this.messageService.caseName$.subscribe(
       res => { this.currentCase = res }
     )
-    this.messageService.layout$.subscribe(
+    this.messageService.layoutChange$.subscribe(
       res => {
         this.isLandscape = res;
         this.isLayout = true;

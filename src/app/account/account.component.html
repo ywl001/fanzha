@@ -16,9 +16,9 @@
     <div *ngIf="!isFirstNode" class="btn btnDel" (click)="onDelete();
     $event.stopPropagation();" matTooltip="删除节点" matTooltipPosition=above>
     </div>
-    <div class="btn btnConnect" *ngIf="data.children.length == 0 || data.lowerAccount" (click)="onSetValue('lowerAccount');$event.stopPropagation();"
-      matTooltip="添加下级节点" matTooltipPosition=above></div>
-    <div class="btn btnDuration" (click)="onSetValue('queryDuration');$event.stopPropagation();" matTooltip="设置查询时长"
+    <div class="btn btnConnect" *ngIf="data.children.length == 0 || data.lowerAccount"
+      (click)="onSetValue('lowerAccount');$event.stopPropagation();" matTooltip="添加下级节点" matTooltipPosition=above></div>
+    <div class="btn btnDuration" (click)="onChangDuration();$event.stopPropagation();" matTooltip="设置查询时长"
       matTooltipPosition=above></div>
     <div *ngIf="!isFirstNode" class="btn btnRemark" (click)="onSetValue('remark');$event.stopPropagation();"
       matTooltip="添加备注" matTooltipPosition=above></div>

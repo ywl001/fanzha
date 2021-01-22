@@ -8,8 +8,7 @@
     </div>
 
     <div class="left-bottom">
-      <!-- <mat-checkbox [(ngModel)]="isHasAccount">有账号</mat-checkbox> -->
-      <mat-form-field style="width: 100%; margin-bottom: -1em;">
+      <mat-form-field style="width:100%; margin-bottom: -1em;">
         <input matInput [value]="filterCase" [formControl]="caseControl" placeholder="过滤。。" autocomplete="off">
       </mat-form-field>
     </div>
@@ -24,10 +23,11 @@
     <button mat-raised-button color="primary" (click)=onLayout($event)>横向排列</button>
   </div>
 
-  <mat-form-field style="width: 80px;position:absolute;right: 30px;top:50px">
+  <!-- <mat-form-field style="width: 80px;position:absolute;right: 30px;top:50px">
     <mat-label>转账后(小时)</mat-label>
     <input matInput type="number" [(ngModel)]="after" autocomplete="off">
-  </mat-form-field>
+  </mat-form-field> -->
+  <!-- <app-time-picker #time style="position:absolute;right:0px;top:20px"></app-time-picker> -->
 
   <div id="toggleLeft" class="toggleLeft" (click)="onToggleLeft()"></div>
 </div>

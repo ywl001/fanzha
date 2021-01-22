@@ -1,51 +1,57 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
+import { AccountNode } from '../models/accountNode';
 import { AddLowerAccountEvent, QueryDurationEvent } from '../models/editNodeEvent';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessageService {
-  private refreshCaseList = new BehaviorSubject('');
-  private accountNode = new BehaviorSubject(null);
-  private closeLeft = new BehaviorSubject('');
-  private caseName = new BehaviorSubject('')
-  private refreshChart = new BehaviorSubject('');
-  private saveImage = new BehaviorSubject('');
-  private layout = new BehaviorSubject(false);
-  private queryDuration = new BehaviorSubject<QueryDurationEvent>(null);
+  private _caseListChange = new ReplaySubject();
+  private _showChart = new ReplaySubject(null);
+  private _closeLeft = new ReplaySubject();
+  private caseName = new ReplaySubject<string>()
+  private _refreshChart = new ReplaySubject();
+  private _saveImage = new ReplaySubject();
+  private _layoutChange = new ReplaySubject<boolean>();
+  private _queryDurationChange = new ReplaySubject<QueryDurationEvent>(null);
   private lowerAccount = new ReplaySubject<AddLowerAccountEvent>();
-  private delNode = new BehaviorSubject(null)
-  private saveData = new ReplaySubject();
+  private _delNode = new ReplaySubject(null)
+  private _saveData = new ReplaySubject();
+  private _startAccountChange = new ReplaySubject();
 
-  refreshCaseList$ = this.refreshCaseList.asObservable();
-  accountNode$ = this.accountNode.asObservable();
-  closeLeft$ = this.closeLeft.asObservable();
+  CaseListChange$ = this._caseListChange.asObservable();
+  showChart$ = this._showChart.asObservable();
+  closeLeft$ = this._closeLeft.asObservable();
+  /**传递caseName */
   caseName$ = this.caseName.asObservable();
-  refreshChart$ = this.refreshChart.asObservable();
-  saveImage$ = this.saveImage.asObservable();
-  layout$ = this.layout.asObservable();
-  queryDuration$ = this.queryDuration.asObservable();
+  refreshChart$ = this._refreshChart.asObservable();
+  /**保存图片 */
+  saveImage$ = this._saveImage.asObservable();
+  /**改变布局 横竖 */
+  layoutChange$ = this._layoutChange.asObservable();
+  queryDurationChange$ = this._queryDurationChange.asObservable();
   lowerAccount$ = this.lowerAccount.asObservable();
-  delNode$ = this.delNode.asObservable();
-  saveData$ = this.saveData.asObservable();
+  delNode$ = this._delNode.asObservable();
+  saveData$ = this._saveData.asObservable();
+  startAccountChange$ = this._startAccountChange.asObservable();
 
   constructor() { }
 
-  sendRefresh(){
-    this.refreshCaseList.next('')
+  caseListChange(){
+    this._caseListChange.next('')
   }
 
-  sendRefreshChart(){
-    this.refreshChart.next('')
+  refreshChart(){
+    this._refreshChart.next('')
   }
 
   sendCloseLeft(){
-    this.closeLeft.next('')
+    this._closeLeft.next('')
   }
 
-  sendAccountNode(value){
-    this.accountNode.next(value)
+  showChart(value){
+    this._showChart.next(value)
   }
 
   sendCaseName(value){
@@ -53,27 +59,31 @@ export class MessageService {
   }
 
   sendSaveImage(){
-    this.saveImage.next('')
+    this._saveImage.next('')
   }
 
-  sendLayout(value){
-    this.layout.next(value)
+  layoutChange(value){
+    this._layoutChange.next(value)
   }
 
   queryDurationChange(value:QueryDurationEvent){
-    this.queryDuration.next(value)
+    this._queryDurationChange.next(value)
   }
 
   addLowerAccount(value){
     this.lowerAccount.next(value)
   }
 
-  delNodeComplete(node){
-    this.delNode.next(node);
+  delNode(node:AccountNode){
+    this._delNode.next(node);
   }
 
-  saveDataMessage(){
-    this.saveData.next();
+  saveData(){
+    this._saveData.next();
+  }
+
+  startAccountChange(value){
+    this._startAccountChange.next(value)
   }
 
 }

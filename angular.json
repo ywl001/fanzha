@@ -31,7 +31,8 @@
             ],
             "scripts": [
               "src/assets/alertify.min.js",
-              "./node_modules/circular-json/build/circular-json.js"
+              "./node_modules/circular-json/build/circular-json.js",
+              "./node_modules/gsap/dist/gsap.min.js"
             ]
           },
           "configurations": {

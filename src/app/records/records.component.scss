@@ -14,17 +14,25 @@
         font-family: 'microsfot YaHei';
         flex:1;
         height: 100%;
-
         /* background-color: lightcoral; */
     }
-    .btnDel {
+    .btn{
         width: 24px;
         height: 24px;
-        background-image: url('../../assets/delete.png');
-        background-size: 100% auto; 
         cursor: pointer;
+        background-size: cover;
+        margin-left: 5px;
+    }
+    .btnDel {
+        background-image: url('../../assets/delete.png');  
         &:hover{
             background-image: url('../../assets/delete_over.png');
+        }
+    }
+    .btnEdit {
+        background-image: url('../../assets/edit.svg');
+        &:hover{
+            background-image: url('../../assets/edit_over.svg');
         }
     }
 }

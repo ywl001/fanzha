@@ -6,7 +6,7 @@
     <p *ngIf="data.accountBankName">付款银行卡银行名称：{{data.accountBankName}}</p>
     <p *ngIf="data.accountBankNumber"> 付款银行卡号：{{data.accountBankNumber}}</p>
     <p *ngIf='data.oppositeName'>对方账号姓名：{{data.oppositeName}}</p>
-    <p *ngIf="data.oppositeAccount"> 对方账号卡号：{{data.oppositeAccount}}</p>
+    <p *ngIf="data.oppositeAccount"> 对方账号卡号：<span style="color: darkred;">{{data.oppositeAccount}}</span></p>
     <p *ngIf="data.oppositeBankName"> 收款银行卡银行名称：{{data.oppositeBankName}}</p>
     <p *ngIf="data.oppositeBankNumber"> 收款银行卡号：{{data.oppositeBankNumber}}</p>
 

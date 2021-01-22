@@ -61,24 +61,23 @@ export class RecordsComponent {
     //获取案件及查询账号信息
     this.message.refreshChart$.subscribe(
       res => {
-        if (this.currentItem) {
-          this.dataService.data = this.currentItem;
-        }
+        if (this.currentItem) this.dataService.data = this.currentItem;
       }
     )
 
-    this.message.queryDuration$.subscribe(
+    this.message.queryDurationChange$.subscribe(
       res => {
-        if (this.currentItem) {
-          console.log('recore query duration')
-          if(res.isFirstNode)
+        if (res.isFirstNode && this.currentItem) {
             this.currentItem.queryDuration = res.duration;
         }
       }
     )
+
+    this.message.startAccountChange$.subscribe(res=>this.onStartAccountChange(res))
   }
 
   private _data;
+
   @Input()
   set data(res) {
     if (this._data != res) {
@@ -115,18 +114,21 @@ export class RecordsComponent {
       startAccount.caseID = item.caseID;
       startAccount.tradeTimes.push(moment(item.tradeTime));
       startAccount.moneys.push(parseFloat(item.money));
-
+      startAccount.commonQueryDuration = item.commonQueryDuration;
       // console.log(startAccount.oppositeAccount+':'+startAccount.queryDuration)
       return startAccount;
     })
     console.log(this.itemList)
   }
 
+  /**增加起始账号 */
   onAddAccount(lawCase) {
     let dialogRef = this.dialog.open(AddAccountComponent, { disableClose: true });
+    dialogRef.componentInstance.state = 'add';
     dialogRef.componentInstance.caseID = lawCase.caseID;
   }
 
+  /**修改案件信息，双击案件时 */
   onEditCase(lawCase) {
     let dialogRef = this.dialog.open(AddCaseComponent, { disableClose: true });
     dialogRef.componentInstance.data = lawCase;
@@ -141,7 +143,7 @@ export class RecordsComponent {
       // console.log(nodes);
       //此处维护dataService的nodes，
       this.dataService.nodes = nodes;
-      this.message.sendAccountNode(nodes)
+      this.message.showChart(nodes)
     }else{
       this.dataService.data = item;
     }
@@ -159,9 +161,23 @@ export class RecordsComponent {
           tableName: 'start_account',
           id: item.id
         }
-        this.sqlService.exec(PhpFunctionName.DEL, data).subscribe(res => this.message.sendRefresh())
+        this.sqlService.exec(PhpFunctionName.DEL, data).subscribe(res => this.message.caseListChange())
       }
     });
+  }
+
+  onEdit(item:AccountNode){
+    let dialogRef = this.dialog.open(AddAccountComponent, { disableClose: true});
+    dialogRef.componentInstance.state = 'edit'
+    dialogRef.componentInstance.data = item;
+  }
+
+  private onStartAccountChange(data){
+    console.log('start account change')
+    this.currentItem = data;
+    const key = data.caseID +'-'+ data.oppositeAccount+'-'+data.tradeTimes[0];
+    this.localService.remove(key);
+    this.dataService.data = data;
   }
 
   /////////////////////////////////////////////下面是导入excel数据/////////////////////////////////////////
@@ -222,7 +238,7 @@ export class RecordsComponent {
           toastr.info(`数据上传完毕`);
           const key = this.currentItem.caseID +'-'+ this.currentItem.oppositeAccount+'-'+this.currentItem.tradeTimes[0];
           this.localService.remove(key);
-          this.message.sendRefreshChart();
+          this.message.refreshChart();
         }
       }
     )

@@ -13,6 +13,7 @@ export class AccountNode {
     tradeNumbers = [];
     isFirstNode:boolean = false;
     isFalseNode:boolean = false;
+    commonQueryDuration:number = 0;
     
     tradeDesc=''
     accountBankName = ''

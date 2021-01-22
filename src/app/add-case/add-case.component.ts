@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import * as toastr from 'toastr';
 import { SqlService } from '../service/sql.service';
 import { MessageService } from '../service/message.service';
 import { PhpFunctionName } from '../models/phpFunctionName';
+import * as toastr from 'toastr'
 
 @Component({
   selector: 'app-add-case',
@@ -44,7 +44,7 @@ export class AddCaseComponent implements OnInit {
       this.sqlService.exec(PhpFunctionName.UPDATE,data).subscribe(
         res => {
           toastr.info('编辑案件成功');
-          this.message.sendRefresh()
+          this.message.caseListChange()
         }
       )
     } else {
@@ -56,7 +56,7 @@ export class AddCaseComponent implements OnInit {
         res => {
           if (res > 0) {
             toastr.info('插入案件成功');
-            this.message.sendRefresh()
+            this.message.caseListChange()
           }
         }
       )
